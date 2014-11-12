@@ -1,9 +1,15 @@
-arenib_interface
+ARENIB INTERFACE
 ================
+© Copydown - Julien De Loor pour la coupe eurobot
 
-Interface de debug/visu du robot
+Interface de debug/visu haut niveau d'un ou plusieurs robots.
+Extrêmement facile à utiliser, on peut utiliser un simulateur 
+ou un robot réel (à condition d'avoir du wifi dans le robot).
 
-Envoyer des paquets à ce serveur en UDP sur le port 2222 
+CECI N'EST PAS UN SIMULATEUR !!!
+
+Pour l'utiliser c'est encore une fois extrêmement facile:
+Envoyez des paquets à ce serveur en UDP sur le port 2222 
 suivant ce protocole:
 
 	sf::Packet packet;
@@ -24,5 +30,8 @@ suivant ce protocole:
 Voilà c'est aussi simple que cela...
 Si vous voulez visualiser des infos complémentaires il faut 
 implémenter votre robot dans l'interface...
+
+Requiert la SFML 2.1 ou 2.0 pour compiler (et c'est TOUT !).
+
 
 	

@@ -38,6 +38,10 @@ int main()
   socket.setBlocking(false);
   window.setFramerateLimit(60);
   
+  std::cout << "Welcome to Arenib Interface" << std::endl;
+  std::cout << "Server local IP: " << sf::IpAddress::getLocalAddress().toString() << std::endl;
+  std::cout << "Server net   IP: " << sf::IpAddress::getPublicAddress().toString() << std::endl;
+  
   while (window.isOpen())
   {
     // Process events
