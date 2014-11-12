@@ -15,8 +15,8 @@ int main()
     // Create the main window
     
     sf::Vector2f terrain_size(3000,2000);
-    sf::RenderWindow window(sf::VideoMode(terrain_size.x/8, 
-                                          terrain_size.y/8), "Arenib Interface");
+    sf::RenderWindow window(sf::VideoMode(terrain_size.x/4, 
+                                          terrain_size.y/4), "Arenib Interface");
 
     sf::View table_view(sf::Vector2f(0,0), sf::Vector2f(terrain_size.x,-terrain_size.y));
 	sf::Texture table_texture;
@@ -30,9 +30,9 @@ int main()
     sf::Clock clock;
     
     sf::UdpSocket socket;
-    if (socket.bind(54000) != sf::Socket::Done)
+    if (socket.bind(2222) != sf::Socket::Done)
     {
-      std::cerr << "olol" << std::endl;
+      std::cerr << "olol cannot bind to 2222" << std::endl;
       return 1;
     }
     

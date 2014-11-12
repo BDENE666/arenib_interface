@@ -3,27 +3,13 @@
 #include "robot.hpp"
 
 Robot::Robot() :
-_color(217,49,53,255),
 _corp(sf::Vector2f(400,290)),
 _roueGauche(sf::Vector2f(60,110)),
 _roueDroite(sf::Vector2f(60,110)),
 _bumper(30)
 {
+  _color= sf::Color(217,49,53,255);
   setupGraphics();
-}
-
-Robot::Robot(const sf::Packet& packet) :
-_color(109,56,209,255),
-_corp(sf::Vector2f(400,300)),
-_roueGauche(sf::Vector2f(50,100)),
-_roueDroite(sf::Vector2f(50,100)),
-_bumper(30)
-{
-  setupGraphics();
-}
-
-sf::Packet& operator >>(sf::Packet& packet, Robot& robot)
-{
 }
 
 Robot::~Robot(){
@@ -62,4 +48,31 @@ void Robot::setupGraphics()
                                      ,_roueDroite.getSize().y*0.5f));
                                                                       
   _bumper.setOrigin(sf::Vector2f(_bumper.getRadius(),-(_corp.getSize().y/2)+2*_bumper.getRadius()));
+}
+
+AbstractRobot* AbstractRobot::createFromName(std::string name)
+{
+	(void) name;
+	return new Robot();
+}
+
+bool AbstractRobot::extract(sf::Packet& packet)
+{
+	sf::Int16 x,y;
+	sf::Int16 theta;
+	if (! (packet >> _state)) return false; //uint8
+	if (! (packet >> x)) return false;      //int16
+	if (! (packet >> y)) return false;      //int16
+	if (! (packet >> theta)) return false;  //int16
+	if (! (packet >> _color.r)) return false;  //uint8
+	if (! (packet >> _color.g)) return false;  //uint8
+	if (! (packet >> _color.b)) return false;  //uint8
+	
+	this->setPosition(sf::Vector2f(x,y)); //en millimetres
+	this->setRotation(theta/10.f);        //en dixiemes de degrés
+	
+	if (!( this->extractExtraInfos(packet))) return false;//selon le robot
+	
+	this->setupGraphics();
+	return true;
 }
