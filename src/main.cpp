@@ -26,8 +26,7 @@ int main()
 	table_sprite.setOrigin(terrain_size/2.f);
     
   std::map<std::string, AbstractRobot*> robots;
-  
-  Robot robot;
+
   sf::Clock clock;
     
   sf::UdpSocket socket;
@@ -36,8 +35,9 @@ int main()
     std::cerr << "olol cannot bind to 2222" << std::endl;
     return 1;
   }
-  //.setBlocake(false);
-    
+  socket.setBlocking(false);
+  window.setFramerateLimit(60);
+  
   while (window.isOpen())
   {
     // Process events
@@ -47,12 +47,46 @@ int main()
       // Close window : exit
       if (event.type == sf::Event::Closed)
         window.close();
-      }
-        
-    float a=clock.getElapsedTime().asSeconds()*50;
-       
-    robot.setRotation(a);
-    robot.setPosition(1000*cos(a*2.f*3.1415f/360.f),1000*sin(a*2.f*3.1415f/360.f));
+    }
+	
+	sf::IpAddress remote;
+	unsigned short port;
+	sf::Uint8 magic;
+	std::string name;
+	sf::Socket::Status status;
+	do {
+		sf::Packet packet;
+		status = socket.receive(packet,remote,port);
+		std::map<std::string, AbstractRobot*>::iterator robot;
+		switch (status)
+		{
+			case sf::Socket::Done:
+				if (!(packet >> magic) || magic != 0x22) break;
+				if (!(packet >> name)) break;
+				robot=robots.find(name);
+				if (robot != robots.end())
+				{
+					if (!robot->second->extract(packet))
+						std::cerr << "receive bad packet failed to update " << name << std::endl;
+				}
+				else 
+				{
+					robots[name] = AbstractRobot::createFromName(name);
+					if (!robots[name]->extract(packet))
+						std::cerr << "receive bad packet failed to update " << name << std::endl;
+				}
+				break;
+			case sf::Socket::Error:
+				std::cerr << "Socket error !!!" << std::endl;
+				break;
+			case sf::Socket::Disconnected:
+				std::cerr << "Socket disconnected !!!" << std::endl;
+				break;
+			default:
+				break;
+		}
+	}
+	while (status==sf::Socket::Done);
         
     // Clear screen
     window.clear();
@@ -64,7 +98,6 @@ int main()
       window.draw(*(it->second));
     }
 		
-    window.draw(robot);
     // Update the window
     window.display();
   }
