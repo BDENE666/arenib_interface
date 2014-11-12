@@ -1,5 +1,8 @@
 
 #include "robot.hpp"
+#include <stdlib.h>
+#include <stdio.h>
+#include "table_texture.hpp"
 #include <iostream>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -16,6 +19,11 @@ int main()
                                           terrain_size.y/8), "Arenib Interface");
 
     sf::View table_view(sf::Vector2f(0,0), sf::Vector2f(terrain_size.x,-terrain_size.y));
+	sf::Texture table_texture;
+	table_texture.loadFromMemory(table_texture_gif,table_texture_gif_len);
+	sf::RectangleShape table_sprite(terrain_size);
+	table_sprite.setTexture(&table_texture,true);
+	table_sprite.setOrigin(terrain_size/2.f);
     
     
     Robot robot;
@@ -48,6 +56,7 @@ int main()
         window.clear();
         
         window.setView(table_view);
+		window.draw(table_sprite);
         window.draw(robot);
         // Update the window
         window.display();
