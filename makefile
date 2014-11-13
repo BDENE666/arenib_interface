@@ -1,6 +1,7 @@
 
 CXX=g++
-DEBUG=no
+DEBUG=yes
+STATIC=yes
 
 EXEC=arenib_interface
 SRC_DIR=src
@@ -10,13 +11,12 @@ INC_DIR=include
 SRC=$(wildcard $(SRC_DIR)/*.cpp) 
 INC=$(wildcard $(INC_DIR)/*.hpp) 
 OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-CXXFLAGS= -W -Wall -I$(INC_DIR)
+CXXFLAGS= -W -Wall -I$(INC_DIR) -D SFML_STATIC=1
 
 ifeq ($(DEBUG), yes)
   LDFLAGS= -L"libwin32" -lsfml-network-s-d -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
   CXXFLAGES += -g
 else
-  CXXFLAGS= -W -Wall -I$(INC_DIR)
   LDFLAGS= -L"libwin32" -lsfml-network-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
 endif
 
