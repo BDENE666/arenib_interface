@@ -44,8 +44,6 @@ int main(int argc, char* argv[])
     std::cout << "Server net   IP: " << sf::IpAddress::getPublicAddress().toString() << std::endl;
   }
 
-  robots["EchecCritique"] = AbstractRobot::createFromName("EchecCritique");
-  
   while (window.isOpen())
   {
     // Process events
