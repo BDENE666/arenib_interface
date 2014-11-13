@@ -35,11 +35,28 @@ class Robot : public AbstractRobot
 	virtual void setupGraphics();
 	
   private:
-	sf::RectangleShape _corp;
-	sf::RectangleShape _roueGauche;
-	sf::RectangleShape _roueDroite;
-	sf::CircleShape _bumper;
-      
+    sf::RectangleShape _corp;
+    sf::RectangleShape _roueGauche;
+    sf::RectangleShape _roueDroite;
+    sf::CircleShape _bumper;
 };
+
+class EchecCritique : public AbstractRobot
+{
+  public:
+    EchecCritique();
+    virtual ~EchecCritique();
+    virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
+    
+  protected:
+    virtual void setupGraphics();
+	
+  private:
+    sf::ConvexShape _corp;
+    sf::RectangleShape _roueGauche;
+    sf::RectangleShape _roueDroite;
+    sf::CircleShape _bumper;
+};
+
 
 #endif
