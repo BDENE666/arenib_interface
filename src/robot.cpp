@@ -3,7 +3,7 @@
 #include "robot.hpp"
 
 Robot::Robot() :
-_corp(sf::Vector2f(400,290)),
+_corp(sf::Vector2f(300,200)),
 _roueGauche(sf::Vector2f(60,110)),
 _roueDroite(sf::Vector2f(60,110)),
 _bumper(30)
@@ -93,7 +93,7 @@ _bumper(12.5)
   _corp.setPoint(5, sf::Vector2f(115, 290));
   _corp.setPoint(6, sf::Vector2f(0, 175));
   _corp.setPoint(7, sf::Vector2f(0, 37));
-  _color= sf::Color(192,195,195,50);
+  _color= sf::Color(157,172,230,50);
   setupGraphics();
 }
 
@@ -113,17 +113,15 @@ void EchecCritique::setupGraphics()
 {
   this->setScale(sf::Vector2f(1.f,-1.f));
   _corp.setFillColor(_color);
-  _corp.setOutlineColor(sf::Color(127,127,127,255));
-  _corp.setOutlineThickness(10);
+  _corp.setOutlineColor(sf::Color(_color.r,_color.g,_color.b,255));
+  _corp.setOutlineThickness(6);
   _roueGauche.setFillColor(sf::Color(30,30,30,255));
-  _roueGauche.setOutlineColor(sf::Color(127,127,127,200));
-  //_roueGauche.setOutlineThickness(10);
+  _roueGauche.setOutlineColor(sf::Color(100,100,100,200));
+  _roueGauche.setOutlineThickness(4);
   _roueDroite.setFillColor(sf::Color(30,30,30,255));
-  _roueDroite.setOutlineColor(sf::Color(127,127,127,200));
-  //_roueDroite.setOutlineThickness(10);
+  _roueDroite.setOutlineColor(sf::Color(100,100,100,200));
+  _roueDroite.setOutlineThickness(4);
   _bumper.setFillColor(sf::Color(250,50,50,255));
-  _bumper.setOutlineColor(sf::Color(127,127,127,255));
-  //_bumper.setOutlineThickness(10);
   
   
   _corp.setOrigin(sf::Vector2f(400*0.5f,290*0.5f));
@@ -135,5 +133,5 @@ void EchecCritique::setupGraphics()
   _roueGauche.setOrigin(sf::Vector2f(100+_roueGauche.getSize().x*0.5f,
                                      _roueGauche.getSize().y*0.5f));
                                                                       
-  _bumper.setOrigin(sf::Vector2f(_bumper.getRadius(),-(290/2)+2*_bumper.getRadius()));
+  _bumper.setOrigin(sf::Vector2f(-50,-110));
 }

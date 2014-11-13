@@ -1,6 +1,6 @@
 
 CXX=g++
-DEBUG=yes
+DEBUG=no
 
 EXEC=arenib_interface
 SRC_DIR=src

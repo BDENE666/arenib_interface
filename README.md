@@ -28,10 +28,32 @@ suivant ce protocole:
 	udpSocket.send(packet, addresseIpDeLinterface, 2222);
 	
 Voilà c'est aussi simple que cela...
+
 Si vous voulez visualiser des infos complémentaires il faut 
-implémenter votre robot dans l'interface...
+implémenter votre robot dans l'interface (voir plus bas)...
 
 Requiert la SFML 2.1 ou 2.0 pour compiler (et c'est TOUT !).
+
+
+Afficher son Robot
+------------------
+
+Copiez-coller la classe Robot et changer les Sf::Shapes.
+La convention ARENIB est la suivante:
+
+	Axe X => Axe des roues
+	Axe Y => Axe perpendiculaire à l'axe des roues (Direction "avant" du Robot)
+	Orientation des axes suis l'orientation mathématique (sens Trigonométrique)
+	c'est donc en mirroir avec l'axe X par rapport à SFML.
+
+	
+	
+	
+
+
+
+
+
 
 
 	
