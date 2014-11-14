@@ -4,7 +4,9 @@
 #ifndef POPUP_WIDGET
 #define POPUP_WIDGET
 
-class PopupWidget : public sf::Drawable, public sf::Transformable
+#include "widget.hpp"
+
+class PopupWidget : public Widget
 {
   public:
     PopupWidget(sf::String name, sf::Vector2f size, float radius=14.0);
@@ -12,8 +14,9 @@ class PopupWidget : public sf::Drawable, public sf::Transformable
     
     void setTitleColor(const sf::Color&);
     void setText(const sf::String&);
+    virtual void useEvent(const sf::Event& event);
     
-    inline bool onIt(const sf::Vector2f& v) {
+    virtual inline bool onIt(const sf::Vector2f& v) const {
       sf::Vector2f p(this->getPosition()-this->getOrigin());
       return (v.x > p.x && 
               v.y > p.y && 
@@ -21,11 +24,17 @@ class PopupWidget : public sf::Drawable, public sf::Transformable
               v.y < p.y + _size.x); 
     }
     
+    
+  protected:
+    void initDraw(sf::RenderTarget &target, sf::RenderStates states) const;
+    
   private:
     sf::ConvexShape _window;
     sf::Text _name;
     sf::Text _text;
     sf::Vector2f _size;
+    sf::Vector2f _previousMouse;
+    bool _pressed;
     
  };
 
