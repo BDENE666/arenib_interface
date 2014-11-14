@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
   std::map<std::string, AbstractRobot*> robots;
 
   sf::Clock clock;
-  
 
   sf::UdpSocket socket;
   if (socket.bind(2222) != sf::Socket::Done)
@@ -52,17 +51,16 @@ int main(int argc, char* argv[])
 
   std::cout << "Welcome to Arenib Interface" << std::endl;
   std::cout << "Server local IP: " << sf::IpAddress::getLocalAddress().toString() << std::endl;
-  if (!(argc > 1 && (std::string(argv[1]) == "-ncp" ||  std::string(argv[1]) == "--no-checkpublic"))) {
+  if (!(argc > 1 && (std::string(argv[1]) == "-ncp" ||  std::string(argv[1]) == "--no-check-public"))) {
     std::cout << "Server net   IP: " << sf::IpAddress::getPublicAddress().toString() << std::endl;
   }
 
   while (window.isOpen())
   {
-    // Process events
+    ///Process events
     sf::Event event;
     while (window.pollEvent(event))
     {
-      // Close window : exit
       if (event.type == sf::Event::Closed)
         window.close();
       else if (event.type == sf::Event::Resized)
@@ -70,8 +68,14 @@ int main(int argc, char* argv[])
           widget_view = sf::View(sf::Vector2f(window.getSize().x*0.5,window.getSize().y*0.5), 
                                  sf::Vector2f(window.getSize().x,window.getSize().y));
       }
+      WidgetManager::instance().useEvent(event);
     }
 
+    
+    ///Widgets 
+    WidgetManager::instance().update();
+    
+    ///Networking 
     sf::IpAddress remote;
     unsigned short port;
     sf::Uint8 magic;
@@ -95,8 +99,17 @@ int main(int argc, char* argv[])
           else 
           {
             robots[name] = AbstractRobot::createFromName(name);
+            Widget* w = robots[name]->createWidget(name);
             if (!robots[name]->extract(packet))
               std::cerr << "receive bad packet failed to update " << name << std::endl;
+            else {
+              sf::Vector2f v;
+              v.x = (robots[name]->getPosition().x+0.5f*terrain_size.x)/terrain_size.x;
+              v.y = (-robots[name]->getPosition().y+0.5f*terrain_size.y)/terrain_size.y;
+              if (v.x >=0.9) v.x = 0.9;
+              if (v.y >=0.9) v.y = 0.9;
+              w->setPosition(v.x*window.getSize().x, v.y*window.getSize().y);
+            }
           }
           break;
         case sf::Socket::Error:
@@ -110,9 +123,10 @@ int main(int argc, char* argv[])
       }
     }
     while (status==sf::Socket::Done);
-
-    // Clear screen
+    
+    ///Drawing
     window.clear();
+    //Robots
     window.setView(table_view);
     window.draw(table_sprite);
     for (std::map<std::string, AbstractRobot*>::iterator it=robots.begin();
@@ -121,9 +135,10 @@ int main(int argc, char* argv[])
       window.draw(*(it->second));
     }
     
+    //Widgets
     window.setView(widget_view);
-
-    // Update the window
+    WidgetManager::instance().drawAll(window);
+    
     window.display();
   }
   return 0;
