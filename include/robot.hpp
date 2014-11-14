@@ -4,7 +4,7 @@
 
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
-#include "popup_widget.hpp"
+
 
 class AbstractRobot : public sf::Drawable, public sf::Transformable
 {
@@ -12,19 +12,16 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 		virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
 		static AbstractRobot* createFromName(std::string name);
 		bool extract(sf::Packet& packet);
-    
-    //Create optionnal widget
-    virtual inline Widget* createWidget(std::string name) { (void) name; return 0;}
 	
 	protected:
-		
+		sf::Uint8 _state;
 		virtual void setupGraphics()=0;
 		inline virtual bool extractExtraInfos(sf::Packet& packet) {
 			(void) packet;
 			return true;
 		}
-	  sf::Color _color;
-    sf::Uint8 _state;
+	
+      sf::Color _color;
 };
 
 class Robot : public AbstractRobot
@@ -33,7 +30,6 @@ class Robot : public AbstractRobot
     Robot();
     virtual ~Robot();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
-    
     
   protected:
 	virtual void setupGraphics();
@@ -51,9 +47,6 @@ class EchecCritique : public AbstractRobot
     EchecCritique();
     virtual ~EchecCritique();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
-    virtual Widget* createWidget(std::string name);
-    
-    static std::string translateState(sf::Uint8);
     
   protected:
     virtual void setupGraphics();
@@ -63,7 +56,6 @@ class EchecCritique : public AbstractRobot
     sf::RectangleShape _roueGauche;
     sf::RectangleShape _roueDroite;
     sf::CircleShape _bumper;
-    PopupWidget* _widget;
 };
 
 
