@@ -2,8 +2,8 @@
 #include "robot.hpp"
 #include <stdlib.h>
 #include <stdio.h>
-#include "table_texture.hpp"
 #include "font_ibm.hpp"
+#include "terrain.hpp"
 #include <iostream>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -18,23 +18,14 @@ sf::Font globalFont;
 
 int main(int argc, char* argv[])
 {
-  // Create the main window
-
   globalFont.loadFromMemory(font_ibm,font_ibm_len);
-  
-  sf::Vector2f terrain_size(3000,2000);
-  sf::RenderWindow window(sf::VideoMode(terrain_size.x/4, 
-        terrain_size.y/4), "Arenib Interface");
+  sf::RenderWindow window(sf::VideoMode(750,500), "Arenib Interface");
+        
+  Terrain* terrain=new TerrainRobotMovie(window);
 
-  sf::View table_view(sf::Vector2f(0,0), sf::Vector2f(terrain_size.x,-terrain_size.y));
   sf::View widget_view(sf::Vector2f(window.getSize().x*0.5,window.getSize().y*0.5), 
                        sf::Vector2f(window.getSize().x,window.getSize().y));
   
-  sf::Texture table_texture;
-  table_texture.loadFromMemory(table_texture_gif,table_texture_gif_len);
-  sf::RectangleShape table_sprite(terrain_size);
-  table_sprite.setTexture(&table_texture,true);
-  table_sprite.setOrigin(terrain_size/2.f);
 
   std::map<std::string, AbstractRobot*> robots;
 
@@ -103,12 +94,10 @@ int main(int argc, char* argv[])
             if (!robots[name]->extract(packet))
               std::cerr << "receive bad packet failed to update " << name << std::endl;
             else {
-              sf::Vector2f v;
-              v.x = (robots[name]->getPosition().x+0.5f*terrain_size.x)/terrain_size.x;
-              v.y = (-robots[name]->getPosition().y+0.5f*terrain_size.y)/terrain_size.y;
-              if (v.x >=0.9) v.x = 0.9;
-              if (v.y >=0.9) v.y = 0.9;
-              w->setPosition(v.x*window.getSize().x, v.y*window.getSize().y);
+              sf::Vector2f v = terrain->toPixelCoords(robots[name]->getPosition());
+              if (v.x >=0.9*window.getSize().x) v.x = 0.9*window.getSize().x;
+              if (v.y >=0.9*window.getSize().y) v.y = 0.9*window.getSize().y;
+              w->setPosition(v.x, v.y);
             }
           }
           break;
@@ -126,11 +115,12 @@ int main(int argc, char* argv[])
     
     ///Drawing
     window.clear();
+    
     //Robots
-    window.setView(table_view);
-    window.draw(table_sprite);
+    window.setView(terrain->getView());
+    window.draw(*terrain);
     for (std::map<std::string, AbstractRobot*>::iterator it=robots.begin();
-        it != robots.end(); it++)
+         it != robots.end(); it++)
     {
       window.draw(*(it->second));
     }

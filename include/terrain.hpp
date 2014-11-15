@@ -5,15 +5,33 @@
 
 #include <SFML/Graphics.hpp>
 
-class Terrain
+class Terrain : public sf::Drawable
 {
   public:
-    Terrain(const sf::Vector2f& size);
+    Terrain(const sf::Vector2f& size, sf::RenderWindow& window);
+    virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const=0;
     
-    
-    inline const sf::Vector2f& getSize() {
-      return _sprite.getSize();
+    inline sf::Vector2f getSize() const {
+      return _view.getSize();
     }
+    
+    inline const sf::View& getView() const{
+      return _view;
+    }
+    
+    sf::Vector2f toPixelCoords(const sf::Vector2f& tc) const;
+    sf::Vector2f toTerrainCoords(const sf::Vector2f& pc) const; 
+    
+  protected:
+    sf::View _view;
+    sf::RenderWindow* _window;
+};
+
+class TerrainRobotMovie : public Terrain
+{
+  public:
+    TerrainRobotMovie(sf::RenderWindow& window);
+    virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
     
   protected:
     sf::Texture _texture;

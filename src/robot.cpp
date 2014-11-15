@@ -8,7 +8,8 @@ Robot::Robot() :
 _corp(sf::Vector2f(300,200)),
 _roueGauche(sf::Vector2f(60,110)),
 _roueDroite(sf::Vector2f(60,110)),
-_bumper(30)
+_bumper(30),
+_widget(0)
 {
   _color= sf::Color(217,49,53,255);
   setupGraphics();
@@ -50,6 +51,21 @@ void Robot::setupGraphics()
                                      ,_roueDroite.getSize().y*0.5f));
                                                                       
   _bumper.setOrigin(sf::Vector2f(_bumper.getRadius(),-(_corp.getSize().y/2)+2*_bumper.getRadius()));
+  
+  if (_widget) {
+    std::stringstream s;
+    s << "-----------------" << std::endl;
+    s << "Etat: " << (int)_state << std::endl;
+    s << "-----------------" << std::endl;
+    s << "Coordonnees: " << std::endl;
+    s << "X " << this->getPosition().x << "mm" << std::endl;
+    s << "Y " << this->getPosition().x << "mm" << std::endl;
+    s << "Theta " << this->getRotation() << " (deg)"<< std::endl;
+    s << "-----------------" << std::endl;
+    
+    _widget->setTitleColor(_color);
+    _widget->setText(sf::String(s.str()));
+  }
 }
 
 AbstractRobot* AbstractRobot::createFromName(std::string name)
@@ -173,6 +189,12 @@ std::string EchecCritique::translateState(sf::Uint8 e)
 }
 
 Widget* EchecCritique::createWidget(std::string name)
+{
+  if (!_widget) _widget = new PopupWidget(name,sf::Vector2f(132,135));
+  return _widget;
+}
+
+Widget* Robot::createWidget(std::string name)
 {
   if (!_widget) _widget = new PopupWidget(name,sf::Vector2f(132,135));
   return _widget;

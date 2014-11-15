@@ -33,7 +33,7 @@ class Robot : public AbstractRobot
     Robot();
     virtual ~Robot();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
-    
+    virtual Widget* createWidget(std::string name);
     
   protected:
 	virtual void setupGraphics();
@@ -43,6 +43,7 @@ class Robot : public AbstractRobot
     sf::RectangleShape _roueGauche;
     sf::RectangleShape _roueDroite;
     sf::CircleShape _bumper;
+    PopupWidget* _widget;
 };
 
 class EchecCritique : public AbstractRobot
