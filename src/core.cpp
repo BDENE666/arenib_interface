@@ -3,6 +3,7 @@
 #include "core.hpp"
 #include <iostream>
 #include "font_ibm.hpp"
+#include "icon_texture.hpp"
 
 
 extern sf::Font globalFont;
@@ -18,9 +19,11 @@ void Core::initialize(sf::Vector2f size)
   globalFont.loadFromMemory(font_ibm,font_ibm_len);
   _window=new sf::RenderWindow(sf::VideoMode(size.x,size.y), "Arenib Interface");
   _window->setFramerateLimit(60);
+  _window->setIcon(88, 88, icon_texture_png);
   _terrain=new TerrainRobotMovie(*_window);
   WidgetManager::instance().initView(sf::View(sf::Vector2f(size.x*0.5,size.y*0.5), 
                                               sf::Vector2f(size.x,size.y)));
+                                              
   
 }
 
