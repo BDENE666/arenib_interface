@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include "popup_widget.hpp"
+#include "icon_texture.hpp"
 
 sf::Font globalFont;
 
@@ -20,6 +21,7 @@ int main(int argc, char* argv[])
 {
   globalFont.loadFromMemory(font_ibm,font_ibm_len);
   sf::RenderWindow window(sf::VideoMode(750,500), "Arenib Interface");
+  window.setIcon(88, 88, icon_texture_png);
         
   Terrain* terrain=new TerrainRobotMovie(window);
 
