@@ -5,9 +5,6 @@
 Widget::Widget()
 {
   WidgetManager::instance()._widgets.insert(this);
-  if (!WidgetManager::instance()._focus) {
-    WidgetManager::instance()._focus=this;
-  }
 }
 
 Widget::~Widget()
@@ -18,6 +15,7 @@ Widget::~Widget()
 }
 
 WidgetManager::WidgetManager() :
+_view(),
 _focus(0)
 {
 }
@@ -63,8 +61,10 @@ void WidgetManager::useEvent(const sf::Event& event)
             (*i)->onIt(sf::Vector2f(event.mouseButton.x,
                                     event.mouseButton.y))) {
           sf::Event e;
-          e.type=sf::Event::LostFocus;
-          _focus->useEvent(e);
+          if (_focus) {
+            e.type=sf::Event::LostFocus;
+            _focus->useEvent(e);
+          }
           _focus=(*i);
           e.type=sf::Event::GainedFocus;
           _focus->useEvent(e);
@@ -72,6 +72,11 @@ void WidgetManager::useEvent(const sf::Event& event)
         }
       }
     }
+  } else if (event.type == sf::Event::Resized)
+  {
+    _view = sf::View(sf::Vector2f(event.size.width*0.5,event.size.height*0.5), 
+                     sf::Vector2f(event.size.width,event.size.height));
+    return;
   }
 
   if (_focus) {

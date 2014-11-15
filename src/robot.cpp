@@ -4,7 +4,14 @@
 
 #include <sstream>
 
-Robot::Robot() :
+AbstractRobot::AbstractRobot(const sf::IpAddress& addr, unsigned short port) :
+_addr(addr),
+_port(port)
+{
+}
+
+Robot::Robot(const sf::IpAddress& addr, unsigned short port) :
+AbstractRobot(addr, port),
 _corp(sf::Vector2f(300,200)),
 _roueGauche(sf::Vector2f(60,110)),
 _roueDroite(sf::Vector2f(60,110)),
@@ -68,11 +75,13 @@ void Robot::setupGraphics()
   }
 }
 
-AbstractRobot* AbstractRobot::createFromName(std::string name)
+AbstractRobot* AbstractRobot::createFromName(std::string name,
+                                             const sf::IpAddress& addr, 
+                                             unsigned short port)
 {
 	if (name=="EchecCritique")
-    return new EchecCritique();
-	return new Robot();
+    return new EchecCritique(addr,port);
+	return new Robot(addr,port);
 }
 
 bool AbstractRobot::extract(sf::Packet& packet)
@@ -97,7 +106,8 @@ bool AbstractRobot::extract(sf::Packet& packet)
 }
 
 
-EchecCritique::EchecCritique() :
+EchecCritique::EchecCritique(const sf::IpAddress& addr, unsigned short port) :
+AbstractRobot(addr, port),
 _corp(8),
 _roueGauche(sf::Vector2f(28,65)),
 _roueDroite(sf::Vector2f(28,65)),

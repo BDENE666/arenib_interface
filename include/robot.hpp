@@ -9,8 +9,9 @@
 class AbstractRobot : public sf::Drawable, public sf::Transformable
 {
 	public:
+    AbstractRobot(const sf::IpAddress& addr, unsigned short port);
 		virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
-		static AbstractRobot* createFromName(std::string name);
+		static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
 		bool extract(sf::Packet& packet);
     
     //Create optionnal widget
@@ -23,14 +24,16 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 			(void) packet;
 			return true;
 		}
+    sf::IpAddress _addr;
 	  sf::Color _color;
+    unsigned short _port;
     sf::Uint8 _state;
 };
 
 class Robot : public AbstractRobot
 {
   public:
-    Robot();
+    Robot(const sf::IpAddress& addr, unsigned short port);
     virtual ~Robot();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
     virtual Widget* createWidget(std::string name);
@@ -49,7 +52,7 @@ class Robot : public AbstractRobot
 class EchecCritique : public AbstractRobot
 {
   public:
-    EchecCritique();
+    EchecCritique(const sf::IpAddress& addr, unsigned short port);
     virtual ~EchecCritique();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
     virtual Widget* createWidget(std::string name);

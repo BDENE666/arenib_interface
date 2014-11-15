@@ -8,14 +8,14 @@
 #include <SFML/Graphics.hpp>
 
 template<typename T> class Singleton
- {
-   public:
-     static T& instance()
-     {
-         static T theSingleInstance; // suppose que T a un constructeur par défaut
-         return theSingleInstance;
-     }
- };
+{
+  public:
+    static T& instance()
+    {
+      static T theSingleInstance; // suppose que T a un constructeur par défaut
+      return theSingleInstance;
+    }
+};
 
 class Widget : public sf::Drawable, public sf::Transformable
 {
@@ -40,6 +40,14 @@ class WidgetManager : public Singleton<WidgetManager>
     void update();
     void drawAll(sf::RenderTarget &target) const;
     void useEvent(const sf::Event& event);
+    
+    inline void initView(const sf::View& view) {
+      _view=view;
+    }
+    
+    inline const sf::View& getView() const {
+      return _view;
+    }
   
   private:
   
@@ -47,6 +55,8 @@ class WidgetManager : public Singleton<WidgetManager>
   
     WidgetManager();
     ~WidgetManager();
+    
+    sf::View _view;
     
     std::set<Widget*> _widgets;
     Widget* _focus;
