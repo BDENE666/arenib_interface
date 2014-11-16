@@ -66,7 +66,7 @@ void Robot::setupGraphics()
     s << "-----------------" << std::endl;
     s << "Coordonnees: " << std::endl;
     s << "X " << this->getPosition().x << "mm" << std::endl;
-    s << "Y " << this->getPosition().x << "mm" << std::endl;
+    s << "Y " << this->getPosition().y << "mm" << std::endl;
     s << "Theta " << this->getRotation() << " (deg)"<< std::endl;
     s << "-----------------" << std::endl;
     
@@ -171,7 +171,7 @@ void EchecCritique::setupGraphics()
     s << "-----------------" << std::endl;
     s << "Coordonnees: " << std::endl;
     s << "X " << this->getPosition().x << "mm" << std::endl;
-    s << "Y " << this->getPosition().x << "mm" << std::endl;
+    s << "Y " << this->getPosition().y << "mm" << std::endl;
     s << "Theta " << this->getRotation() << " (deg)"<< std::endl;
     s << "-----------------" << std::endl;
     
