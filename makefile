@@ -13,11 +13,12 @@ INC=$(wildcard $(INC_DIR)/*.hpp)
 OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 CXXFLAGS= -W -Wall -I$(INC_DIR) -D SFML_STATIC=1
 
+OBJ+= resources.o
 ifeq ($(DEBUG), yes)
-  LDFLAGS= -L"libwin32" -lsfml-network-s-d -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
+  LDFLAGS= -lsfml-network-s-d -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
   CXXFLAGES += -g
 else
-  LDFLAGS= -L"libwin32" -lsfml-network-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
+  LDFLAGS= -lsfml-network-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
 endif
 
 all:$(EXEC)
@@ -27,6 +28,9 @@ else
 	@echo Generation en mode release
 endif
 
+
+resources.o: resources.rc $(HEADER)
+	windres resources.rc resources.o -v
 
 build/%.o: $(SRC_DIR_CIBLE)/%.cpp $(INC_CIBLE) $(INC)
 	@echo Compilation C++ $< to $@
