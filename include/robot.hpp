@@ -36,7 +36,7 @@ class Robot : public AbstractRobot
     Robot(const sf::IpAddress& addr, unsigned short port);
     virtual ~Robot();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
-    virtual Widget* createWidget(std::string name);
+    virtual RobotWidget* createWidget(std::string name);
     
   protected:
 	virtual void setupGraphics();
