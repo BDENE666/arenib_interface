@@ -15,7 +15,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 		bool extract(sf::Packet& packet);
     
     //Create optionnal widget
-    virtual inline Widget* createWidget(std::string name) { (void) name; return 0;}
+    virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}
 	
 	protected:
 		
@@ -46,7 +46,7 @@ class Robot : public AbstractRobot
     sf::RectangleShape _roueGauche;
     sf::RectangleShape _roueDroite;
     sf::CircleShape _bumper;
-    PopupWidget* _widget;
+    RobotWidget* _widget;
 };
 
 class EchecCritique : public AbstractRobot
@@ -55,7 +55,7 @@ class EchecCritique : public AbstractRobot
     EchecCritique(const sf::IpAddress& addr, unsigned short port);
     virtual ~EchecCritique();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
-    virtual Widget* createWidget(std::string name);
+    virtual RobotWidget* createWidget(std::string name);
     
     static std::string translateState(sf::Uint8);
     
@@ -67,7 +67,7 @@ class EchecCritique : public AbstractRobot
     sf::RectangleShape _roueGauche;
     sf::RectangleShape _roueDroite;
     sf::CircleShape _bumper;
-    PopupWidget* _widget;
+    RobotWidget* _widget;
 };
 
 

@@ -5,11 +5,12 @@
 #define POPUP_WIDGET
 
 #include "widget.hpp"
+class AbstractRobot;
 
 class PopupWidget : public Widget
 {
   public:
-    PopupWidget(sf::String name, sf::Vector2f size, float radius=14.0);
+    PopupWidget(sf::String name, sf::Vector2f size, float radius=14.f);
 		virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
     
     void setTitleColor(const sf::Color&);
@@ -25,10 +26,10 @@ class PopupWidget : public Widget
     }
     
     
+    static void initBubbleShape(sf::ConvexShape& shape, const sf::Vector2f& size,float radius=14.f);
+    
   protected:
     void initDraw(sf::RenderTarget &target, sf::RenderStates states) const;
-    
-  private:
     sf::ConvexShape _window;
     sf::Text _name;
     sf::Text _text;
@@ -38,5 +39,19 @@ class PopupWidget : public Widget
     
  };
 
+ 
+class RobotWidget : public PopupWidget
+{
+  public:
+    RobotWidget(AbstractRobot* r, sf::String name, sf::Vector2f size, float radius=14.0);
+		virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
+    virtual void update(float dt);
+    virtual void useEvent(const sf::Event& event);
+    
+  protected:
+    sf::ConvexShape _gluePlace;
+    AbstractRobot* _robot;
+    bool _glue;
+};
 
 #endif

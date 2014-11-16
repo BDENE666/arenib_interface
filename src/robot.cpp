@@ -200,12 +200,12 @@ std::string EchecCritique::translateState(sf::Uint8 e)
 
 Widget* EchecCritique::createWidget(std::string name)
 {
-  if (!_widget) _widget = new PopupWidget(name,sf::Vector2f(132,135));
+  if (!_widget) _widget = new RobotWidget(this,name,sf::Vector2f(132,135));
   return _widget;
 }
 
 Widget* Robot::createWidget(std::string name)
 {
-  if (!_widget) _widget = new PopupWidget(name,sf::Vector2f(132,135));
+  if (!_widget) _widget = new RobotWidget(this,name,sf::Vector2f(132,135));
   return _widget;
 }
