@@ -105,6 +105,28 @@ bool AbstractRobot::extract(sf::Packet& packet)
 	return true;
 }
 
+bool AbstractRobot::send(sf::Packet& packet)
+{
+	sf::Int16 x,y;
+	sf::Int16 theta;
+
+        sf::Vector2f position=this->getPosition(); //en millimetres
+	float theta_f= (this->getRotation())*10;        //en dixiemes de degrés
+
+        x=(sf::Int16)(position.x);
+        y=(sf::Int16)(position.y);
+        theta=(sf::Int16)theta_f;
+
+	if (! (packet << _state)) return false; //uint8
+	if (! (packet << x)) return false;      //int16
+	if (! (packet << y)) return false;      //int16
+	if (! (packet << theta)) return false;  //int16
+	if (! (packet << _color.r)) return false;  //uint8
+	if (! (packet << _color.g)) return false;  //uint8
+	if (! (packet << _color.b)) return false;  //uint8
+	
+	return true;
+}
 
 EchecCritique::EchecCritique(const sf::IpAddress& addr, unsigned short port) :
 AbstractRobot(addr, port),
