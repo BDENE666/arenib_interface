@@ -18,7 +18,7 @@ suivant ce protocole:
 	packet << (sf::Uint8) 0x22;  //magic       // uint8
 	packet << (sf::Uint8) 0x1;                 // uint8 <-- "nombre de robot"
 	packet << (sf::Uint16) flags;              // uint16 0xF000 | delay_ms
-	packet << std::string("Nom de mon robot"); // std::string <-- identifiant du robot 
+	packet << std::string("Nom de mon robot"); // std::string <-- identifiant du robot gardez tjs le même
 	packet << (sf::Uint8) etat;                // uint8 
 	packet << (sf::Int16) position_x; //mm     // int16 
 	packet << (sf::Int16) position_y; //mm     // int16 
@@ -58,6 +58,8 @@ Recevoir la position des autres sur son Robot
 Il vous faut activer cette option en insérant la variable 
 flags dans votre paquet et ensuite attendre la reception de 
 paquets udp du même type de que le précédant sur le port 2222
+
+Vous ne recevrez que les paquets des AUTRES robots
 
 	sf::Packet packet;
 	udpSocket.receive(packet, from_ip, from_port);
