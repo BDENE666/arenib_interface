@@ -18,6 +18,8 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     //Create optionnal widget
     virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}
 
+    sf::Mutex mutex;
+    
   protected:
 
     virtual void setupGraphics()=0;
@@ -27,8 +29,11 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     }
     sf::IpAddress _addr;
     sf::Color _color;
+    sf::Thread _thread;
     unsigned short _port;
+    sf::Uint16 _flags;
     sf::Uint8 _state;
+    
 };
 
 class Robot : public AbstractRobot
