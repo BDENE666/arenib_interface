@@ -13,7 +13,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
     static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
     bool extract(sf::Packet& packet);
-    bool send(sf::Packet& packet);
+    bool pack(sf::Packet& packet);
 
     //Create optionnal widget
     virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}
@@ -27,12 +27,17 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
       (void) packet;
       return true;
     }
+    
+    
     sf::IpAddress _addr;
     sf::Color _color;
     sf::Thread _thread;
     unsigned short _port;
     sf::Uint16 _flags;
     sf::Uint8 _state;
+    
+  private:
+    void thread_func();
     
 };
 

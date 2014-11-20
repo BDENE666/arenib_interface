@@ -28,11 +28,11 @@ suivant ce protocole:
 	packet << (sf::Uint8) color_b; //bleu      // uint8 
 	
 	//Vous pouvez aussi ajouter d'autres variables (optionnelles) 
-  packet << (sf::Int16) extra_size;  //données relative à votre robot
+	packet << (sf::Int16) extra_size;  //données relative à votre robot
 	packet << extra;  //données relative à votre robot
 	
 	udpSocket.send(packet, addresseIpDeLinterface, 2222);
-  
+	
   
 	
 Voilà c'est aussi simple que cela...

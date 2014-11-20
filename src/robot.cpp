@@ -7,8 +7,10 @@
 
 AbstractRobot::AbstractRobot(const sf::IpAddress& addr, unsigned short port) :
 _addr(addr),
+_thread(&AbstractRobot::thread_func, this),
 _port(port)
 {
+  
 }
 
 Robot::Robot(const sf::IpAddress& addr, unsigned short port) :
@@ -106,17 +108,25 @@ bool AbstractRobot::extract(sf::Packet& packet)
 	return true;
 }
 
-bool AbstractRobot::send(sf::Packet& packet)
+bool AbstractRobot::pack(sf::Packet& packet)
 {
+  return false;
+}
+
+void AbstractRobot::thread_func()
+{
+  sf::UdpSocket socket;
+  /*
+  
 	sf::Int16 x,y;
 	sf::Int16 theta;
 
-        sf::Vector2f position=this->getPosition(); //en millimetres
-	float theta_f= (this->getRotation())*10;        //en dixiemes de degrés
+  sf::Vector2f position=this->getPosition(); //en millimetres
+  float theta_f= (this->getRotation())*10;   //en dixiemes de degrés
 
-        x=(sf::Int16)(position.x);
-        y=(sf::Int16)(position.y);
-        theta=(sf::Int16)theta_f;
+  x=(sf::Int16)(position.x);
+  y=(sf::Int16)(position.y);
+  theta=(sf::Int16)theta_f;
 
 	if (! (packet << _state)) return false; //uint8
 	if (! (packet << x)) return false;      //int16
@@ -126,7 +136,7 @@ bool AbstractRobot::send(sf::Packet& packet)
 	if (! (packet << _color.g)) return false;  //uint8
 	if (! (packet << _color.b)) return false;  //uint8
 	
-	return true;
+	*/
 }
 
 
