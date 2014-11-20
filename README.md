@@ -17,7 +17,7 @@ suivant ce protocole:
 	sf::Packet packet;
 	packet << (sf::Uint8) 0x22;  //magic       // uint8
 	packet << (sf::Uint8) 0x1;                 // uint8 <-- "nombre de robot"
-	packet << (sf::Uint16) flags;              // uint16 0xF000 | delay_ms
+	packet << (sf::Uint16) flags;              // uint16 
 	packet << std::string("Nom de mon robot"); // std::string <-- identifiant du robot gardez tjs le même
 	packet << (sf::Uint8) etat;                // uint8 
 	packet << (sf::Int16) position_x; //mm     // int16 
@@ -28,6 +28,7 @@ suivant ce protocole:
 	packet << (sf::Uint8) color_b; //bleu      // uint8 
 	
 	//Vous pouvez aussi ajouter d'autres variables (optionnelles) 
+  packet << (sf::Int16) extra_size;  //données relative à votre robot
 	packet << extra;  //données relative à votre robot
 	
 	udpSocket.send(packet, addresseIpDeLinterface, 2222);
@@ -65,36 +66,35 @@ Vous ne recevrez que les paquets des AUTRES robots
 	udpSocket.receive(packet, from_ip, from_port);
 	packet >> (sf::Uint8) 0x22;  //magic       // uint8
 	packet >> (sf::Uint8) nb_robots;           // uint8
-	packet >> (sf::Uint16) flags;  //Identique à celui envoyé par votre robot
+	
 	for (int i=0; i < nb_robots; i++) {
-	  if (flags & 0x8000) packet >> std::string;                     
-	  if (flags & 0x4000) packet >> (sf::Uint8) etat;
-	  if (flags & 0x2000) { 
-	    packet >> (sf::Int16) position_x; //mm 
-	    packet >> (sf::Int16) position_y; //mm 
-	    packet >> (sf::Int16) theta; //degres*10 
-    }
-    if (flags & 0x1000) { 
-	    packet >> (sf::Uint8) color_r;
-	    packet >> (sf::Uint8) color_g; 
-	    packet >> (sf::Uint8) color_b; 
-    }
-  }
+	  packet >> (sf::Uint16) flags;  //Identique à celui envoyé par votre robot
+	  packet >> (std::string) name;                     
+	  packet >> (sf::Uint8) etat;
+	 
+	  packet >> (sf::Int16) position_x; //mm 
+	  packet >> (sf::Int16) position_y; //mm 
+	  packet >> (sf::Int16) theta; //degres*10 
+	 
+	  packet >> (sf::Uint8) color_r;
+	  packet >> (sf::Uint8) color_g; 
+	  packet >> (sf::Uint8) color_b; 
+	  if (flags & 0x8000) packet >> extra;
+	}
 	
 	
 Flags
 -----
 La variable flags permet de régler les données envoyés au 
 robot et le delay entre 2 envois d'information
+Le mot de 16bits de décompose ainsi
 
-	Le mot de 16bits de décompose ainsi
+
 	Fort           Faible
-	nspc uuss ssss ssss
+	euuu uuss ssss ssss
 	
-	n: demande le nom des autres robots
-	s: demande l'état des autres robots
-	p: demande la position des autres robots
-	c: demande la couleur des autres robots	
+
+	e: le paquet contient des donnes extras
 	u: non utilisé pour l'instant (mettre 0)
 	s: delay entre 2 envois (de 1 à 1023 ms) si 0 (par defaut) pas d'envois de données
 
