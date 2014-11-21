@@ -10,6 +10,8 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 {
   public:
     AbstractRobot(const sf::IpAddress& addr, unsigned short port);
+    virtual ~AbstractRobot();
+    
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
     static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
     bool extract(sf::Packet& packet);
@@ -24,6 +26,10 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 
     virtual void setupGraphics()=0;
     inline virtual bool extractExtraInfos(sf::Packet& packet) {
+      (void) packet;
+      return true;
+    }
+    inline virtual bool packExtraInfos(sf::Packet& packet) {
       (void) packet;
       return true;
     }

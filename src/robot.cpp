@@ -2,6 +2,7 @@
 
 #include "robot.hpp"
 #include "robots/echec_critique.hpp"
+#include "core.hpp"
 
 #include <sstream>
 
@@ -11,6 +12,11 @@ _thread(&AbstractRobot::thread_func, this),
 _port(port)
 {
   
+}
+
+AbstractRobot::~AbstractRobot() {
+  _flags=0;
+  _thread.wait();
 }
 
 Robot::Robot(const sf::IpAddress& addr, unsigned short port) :
@@ -91,6 +97,7 @@ bool AbstractRobot::extract(sf::Packet& packet)
 {
 	sf::Int16 x,y;
 	sf::Int16 theta;
+  if (! (packet >> _flags)) return false; //uint8
 	if (! (packet >> _state)) return false; //uint8
 	if (! (packet >> x)) return false;      //int16
 	if (! (packet >> y)) return false;      //int16
@@ -110,12 +117,36 @@ bool AbstractRobot::extract(sf::Packet& packet)
 
 bool AbstractRobot::pack(sf::Packet& packet)
 {
+  packet << (sf::Uint16) _flags;              // uint16 
+  packet << std::string("Nom de mon robot"); // std::string <-- identifiant du robot gardez tjs le même
+  packet << (sf::Uint8) _state;                // uint8 
+  /*packet << (sf::Int16) position_x; //mm     // int16 
+  packet << (sf::Int16) position_y; //mm     // int16 
+  packet << (sf::Int16) theta; //degres*10   // int16 
+  packet << (sf::Uint8) color_r; //rouge     // uint8 
+  packet << (sf::Uint8) color_g; //vert      // uint8 
+  packet << (sf::Uint8) color_b; //bleu      // uint8 */
+
   return false;
 }
 
 void AbstractRobot::thread_func()
 {
   sf::UdpSocket socket;
+  sf::Packet packet;
+  
+  while (_flags & 0x3FFFF)
+  {
+    if (Core::instance().getRobots().size() > 1)
+    {
+      packet.clear();
+      packet << (sf::Uint8) 0x22;  //magic       // uint8
+      packet << (sf::Uint8) Core::instance().getRobots().size()-1;
+    
+      socket.send(packet, _addr, _port);
+    }
+  }
+  
   /*
   
 	sf::Int16 x,y;
