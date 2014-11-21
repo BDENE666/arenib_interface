@@ -15,7 +15,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
     static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
     bool extract(sf::Packet& packet);
-    void pack(sf::Packet& packet, const std::string& name);
+    void pack(sf::Packet& packet);
 
     //Create optionnal widget
     virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}

@@ -99,7 +99,7 @@ bool AbstractRobot::extract(sf::Packet& packet)
 	sf::Int16 x,y;
 	sf::Int16 theta;
   sf::Lock lock(mutex);
-  sf::Uint8 temp_flags;
+  sf::Uint16 temp_flags;
   if (! (packet >> temp_flags)) return false; //uint8
 	if (! (packet >> _state)) return false; //uint8
 	if (! (packet >> x)) return false;      //int16
@@ -121,12 +121,10 @@ bool AbstractRobot::extract(sf::Packet& packet)
 	return true;
 }
 
-void AbstractRobot::pack(sf::Packet& packet, const std::string& name)
+void AbstractRobot::pack(sf::Packet& packet)
 {
   sf::Lock lock(mutex);
-
   packet << (sf::Uint16) _flags;          
-  packet << name; 
   packet << (sf::Uint8) _state;             
   packet << (sf::Int16) getPosition().x; //mm  
   packet << (sf::Int16) getPosition().y; //mm  
@@ -156,7 +154,8 @@ void AbstractRobot::thread_func()
       for (;it != Core::instance().getRobots().end(); it++)
       {
         if (it->second != this) {
-          it->second->pack(packet,it->first);
+          packet << it->first; 
+          it->second->pack(packet);
         }        
       }
       socket.send(packet, _addr, _port);

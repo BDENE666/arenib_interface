@@ -17,8 +17,8 @@ suivant ce protocole:
 	sf::Packet packet;
 	packet << (sf::Uint8) 0x22;  //magic       // uint8
 	packet << (sf::Uint8) 0x1;                 // uint8 <-- "nombre de robot"
-	packet << (sf::Uint16) flags;              // uint16 
 	packet << std::string("Nom de mon robot"); // std::string <-- identifiant du robot gardez tjs le même
+	packet << (sf::Uint16) flags;              // uint16 
 	packet << (sf::Uint8) etat;                // uint8 
 	packet << (sf::Int16) position_x; //mm     // int16 
 	packet << (sf::Int16) position_y; //mm     // int16 
@@ -68,8 +68,8 @@ Vous ne recevrez que les paquets des AUTRES robots
 	packet >> (sf::Uint8) nb_robots;           // uint8
 	
 	for (int i=0; i < nb_robots; i++) {
+		packet >> (std::string) name; 
 	  packet >> (sf::Uint16) flags;  //Identique à celui envoyé par votre robot
-	  packet >> (std::string) name;                     
 	  packet >> (sf::Uint8) etat;
 	 
 	  packet >> (sf::Int16) position_x; //mm 

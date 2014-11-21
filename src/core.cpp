@@ -64,6 +64,7 @@ int Core::main(int argc, char** argv)
     sf::IpAddress remote;
     unsigned short port;
     sf::Uint8 magic;
+    sf::Uint8 n;
     std::string name;
     sf::Socket::Status status;
     do {
@@ -74,24 +75,27 @@ int Core::main(int argc, char** argv)
       {
         case sf::Socket::Done:
           if (!(packet >> magic) || magic != 0x22) break;
-          if (!(packet >> name)) break;
-          robot=_robots.find(name);
-          if (robot != _robots.end())
-          {
-            if (!robot->second->extract(packet))
-              std::cerr << "receive bad packet failed to update " << name << std::endl;
-          }
-          else 
-          {
-            _robots[name] = AbstractRobot::createFromName(name,remote,port);
-            Widget* w = _robots[name]->createWidget(name);
-            if (!_robots[name]->extract(packet))
-              std::cerr << "receive bad packet failed to update " << name << std::endl;
-            else {
-              sf::Vector2f v = _terrain->toPixelCoords(_robots[name]->getPosition());
-              if (v.x >=0.9*_window->getSize().x) v.x = 0.9*_window->getSize().x;
-              if (v.y >=0.9*_window->getSize().y) v.y = 0.9*_window->getSize().y;
-              w->setPosition(v.x, v.y);
+          if (!(packet >> n)) break;
+          for (unsigned int i=0;i < n;i++) {
+            if (!(packet >>  name)) break;
+            robot=_robots.find(name);
+            if (robot != _robots.end())
+            {
+              if (!robot->second->extract(packet))
+                std::cerr << "receive bad packet failed to update " << name << std::endl;
+            }
+            else 
+            {
+              _robots[name] = AbstractRobot::createFromName(name,remote,port);
+              Widget* w = _robots[name]->createWidget(name);
+              if (!_robots[name]->extract(packet))
+                std::cerr << "receive bad packet failed to update " << name << std::endl;
+              /*else {
+                sf::Vector2f v = _terrain->toPixelCoords(_robots[name]->getPosition());
+                if (v.x >=0.9*_window->getSize().x) v.x = 0.9*_window->getSize().x;
+                if (v.y >=0.9*_window->getSize().y) v.y = 0.9*_window->getSize().y;
+                w->setPosition(v.x, v.y);
+              }*/
             }
           }
           break;
