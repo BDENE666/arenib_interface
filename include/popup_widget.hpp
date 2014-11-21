@@ -5,6 +5,7 @@
 #define POPUP_WIDGET
 
 #include "widget.hpp"
+#include <SFML/System.hpp>
 class AbstractRobot;
 
 class PopupWidget : public Widget
@@ -29,6 +30,8 @@ class PopupWidget : public Widget
     static void initBubbleShape(sf::ConvexShape& shape, const sf::Vector2f& size,float radius=14.f);
     
   protected:
+    inline virtual void outMousePressed( int x, int y) { (void) x; (void) y; } //outside the Popup
+  
     void initDraw(sf::RenderTarget &target, sf::RenderStates states) const;
     sf::ConvexShape _window;
     sf::Text _name;
@@ -49,9 +52,14 @@ class RobotWidget : public PopupWidget
     virtual void useEvent(const sf::Event& event);
     
   protected:
+  
+    virtual void outMousePressed( int x, int y);
+    
     sf::ConvexShape _gluePlace;
     AbstractRobot* _robot;
     bool _glue;
+    
+    sf::Clock _targetPointClock;
 };
 
 #endif

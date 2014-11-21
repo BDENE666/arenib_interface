@@ -139,17 +139,17 @@ void AbstractRobot::pack(sf::Packet& packet)
 void AbstractRobot::thread_func()
 {
   _running=true;
-  sf::UdpSocket socket;
   sf::Packet packet;
   
-  while (_flags & 0x3FF)
+  while (_flags & 0x3FF )
   {
     if (Core::instance().getRobots().size() > 1)
     {
       packet.clear();
-      packet << (sf::Uint8) 0x22;  //magic       // uint8
+      packet << (sf::Uint8) 0x22;  //magic
       packet << (sf::Uint8) Core::instance().getRobots().size()-1;
     
+      
       std::map<std::string, AbstractRobot*>::iterator it=Core::instance().getRobots().begin();
       for (;it != Core::instance().getRobots().end(); it++)
       {
@@ -158,7 +158,9 @@ void AbstractRobot::thread_func()
           it->second->pack(packet);
         }        
       }
-      socket.send(packet, _addr, _port);
+      mutex.lock();
+      _socket.send(packet, _addr, _port);
+      mutex.unlock();
     }
     sf::sleep(sf::milliseconds(_flags & 0x3FF));
   }
@@ -170,4 +172,16 @@ RobotWidget* Robot::createWidget(std::string name)
 {
   if (!_widget) _widget = new RobotWidget(this,name,sf::Vector2f(132,135));
   return _widget;
+}
+
+void AbstractRobot::sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta )
+{
+  if (!acceptTargetPoint()) return;
+  sf::Lock lock(mutex);
+  sf::Packet packet;
+  packet << (sf::Uint8) 0x21;  //magic
+  packet << (sf::Int16) x;
+  packet << (sf::Int16) y;
+  packet << (sf::Int16) theta;
+  _socket.send(packet, _addr, 2222);
 }

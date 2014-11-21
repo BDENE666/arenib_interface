@@ -93,6 +93,11 @@ void PopupWidget::useEvent(const sf::Event& event){
       _previousMouse=sf::Vector2f(event.mouseButton.x,
                                   event.mouseButton.y);
     }
+    else {
+      this->outMousePressed(event.mouseButton.x,
+                            event.mouseButton.y);
+    }
+      
   } else if (event.type == sf::Event::MouseButtonReleased) {
     if (event.mouseButton.button == sf::Mouse::Left)
     {
@@ -167,5 +172,14 @@ void RobotWidget::useEvent(const sf::Event& event)
         p.x <= _gluePlace.getPosition().x + _size.x && 
         p.y <= _gluePlace.getPosition().y + _size.y)
       _glue=true;
+  }
+}
+void RobotWidget::outMousePressed(int x, int y)
+{
+  if (_robot->acceptTargetPoint()) {
+    sf::Vector2f ppos(x,y);
+    sf::Vector2f rpos=Core::instance().getTerrain()->toTerrainCoords(ppos);
+    _robot->sendTargetPoint(rpos.x,rpos.y,_robot->getRotation()*10);
+    _targetPointClock.restart();
   }
 }

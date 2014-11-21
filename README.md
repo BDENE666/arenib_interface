@@ -58,7 +58,8 @@ Recevoir la position des autres sur son Robot
 
 Il vous faut activer cette option en insérant la variable 
 flags dans votre paquet et ensuite attendre la reception de 
-paquets udp du même type de que le précédant sur le port 2222
+paquets udp du même type de que le précédant sur le port d'entré 
+du robot
 
 Vous ne recevrez que les paquets des AUTRES robots
 
@@ -91,14 +92,31 @@ Le mot de 16bits de décompose ainsi
 
 
 	Fort           Faible
-	euuu uuss ssss ssss
+	etuu uuss ssss ssss
 	
 
 	e: le paquet contient des donnes extras
+	t: le robot accepte des paquets target
 	u: non utilisé pour l'instant (mettre 0)
 	s: delay entre 2 envois (de 1 à 1023 ms) si 0 (par defaut) pas d'envois de données
 
 
+
+Paquets Target
+--------------
+
+Le paquet target est envoyer au robot lorsque l'utilisateur clique sur la 
+fenêtre, il est envoyé sur le port d'entré du robot. Il est utilisé pour 
+donner une position au robot 
+
+Voici comment le recevoir
+
+	sf::Packet packet;
+	udpSocket.receive(packet, from_ip, from_port);
+	packet >> (sf::Uint8) 0x21;  //magic
+	packet >> (sf::Int16) position_x; //mm 
+	packet >> (sf::Int16) position_y; //mm 
+	packet >> (sf::Int16) theta; //degres*10 
 
 
 

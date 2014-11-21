@@ -19,6 +19,8 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 
     //Create optionnal widget
     virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}
+    inline bool acceptTargetPoint() { return _flags & 0x4000; }
+    virtual void sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta );
 
     sf::Mutex mutex;
     
@@ -35,7 +37,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
       (void) packet;
     }
     
-    
+    sf::UdpSocket _socket;
     sf::IpAddress _addr;
     sf::Color _color;
     sf::Thread _thread;
