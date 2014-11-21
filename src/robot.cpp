@@ -79,6 +79,23 @@ void Robot::setupGraphics()
     s << "Y " << this->getPosition().y << "mm" << std::endl;
     s << "Theta " << this->getRotation() << " (deg)"<< std::endl;
     s << "-----------------" << std::endl;
+    s << "-----------------" << std::endl;
+    s << "Reseau: " << std::endl;
+    s << "Ip: " << _addr.toString() << std::endl;
+    s << "Port: " << _port << std::endl;
+    s << "-----------------" << std::endl;
+    s << "Communication: " << std::endl;
+    
+    if (threadRunning()) {
+      s << "Thread Active" << std::endl;
+      s << "Period " << getSendPeriod() << "ms" << std::endl;
+    } else 
+      s << "Thread Disable" << std::endl;
+    if (acceptTargetPoint())
+      s << "TP Available " << std::endl;
+    else 
+      s << "TP Unavailable " << std::endl;
+    s << "-----------------" << std::endl;
     
     _widget->setTitleColor(_color);
     _widget->setText(sf::String(s.str()));
@@ -89,7 +106,7 @@ AbstractRobot* AbstractRobot::createFromName(std::string name,
                                              const sf::IpAddress& addr, 
                                              unsigned short port)
 {
-	if (name=="EchecCritique")
+	if (name=="EchecCritique" || name=="EchecCritique2")
     return new EchecCritique(addr,port);
 	return new Robot(addr,port);
 }
@@ -170,7 +187,7 @@ void AbstractRobot::thread_func()
 
 RobotWidget* Robot::createWidget(std::string name)
 {
-  if (!_widget) _widget = new RobotWidget(this,name,sf::Vector2f(132,135));
+  if (!_widget) _widget = new RobotWidget(this,name,sf::Vector2f(132,230));
   return _widget;
 }
 

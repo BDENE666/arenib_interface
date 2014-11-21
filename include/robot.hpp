@@ -19,7 +19,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 
     //Create optionnal widget
     virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}
-    inline bool acceptTargetPoint() { return _flags & 0x4000; }
+    
     virtual void sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta );
     
     inline void updateRobotEndpoint(const sf::IpAddress& i, unsigned short p) {
@@ -28,7 +28,12 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 
     sf::Mutex mutex;
     
-    inline bool threadRunning() { return _running; }
+    
+    //Getters
+    inline bool acceptTargetPoint() const { return _flags & 0x4000; }
+    inline bool threadRunning() const { return _running; }
+    inline sf::Uint16 getSendPeriod() const { return _flags & 0x3FF; } 
+    inline const sf::Color& getColor() const { return _color; } 
     
   protected:
 
@@ -43,7 +48,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     
     sf::UdpSocket _socket;
     sf::IpAddress _addr;
-    sf::Color _color;
+    sf::Color _color; //must have 255 as alpha channel
     sf::Thread _thread;
     unsigned short _port;
     volatile sf::Uint16 _flags;

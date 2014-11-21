@@ -19,6 +19,7 @@ class EchecCritique : public AbstractRobot
 
   private:
     sf::ConvexShape _corp;
+    sf::RectangleShape _blocMoteur;
     sf::RectangleShape _roueGauche;
     sf::RectangleShape _roueDroite;
     sf::CircleShape _bumper;

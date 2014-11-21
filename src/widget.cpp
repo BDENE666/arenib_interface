@@ -41,12 +41,12 @@ void WidgetManager::update() {
 
 void WidgetManager::drawAll(sf::RenderTarget &target) const
 {
-  if (_focus) target.draw(*_focus);
   for (iterator i=_widgets.begin();i != _widgets.end();i++)
   {
     if (*i != _focus)
       target.draw(**i);
   }
+  if (_focus) target.draw(*_focus);
 }
 
 void WidgetManager::useEvent(const sf::Event& event)

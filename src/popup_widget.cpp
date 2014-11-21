@@ -52,7 +52,8 @@ _pressed(false)
 {
   initBubbleShape(_window,size,radius);       
   _window.setFillColor(sf::Color(42,42,42,140));
-  _name.setPosition(sf::Vector2f(size.x*0.5f,radius*0.5f));
+  _window.setOutlineColor(sf::Color(0,162,232,140));
+  _name.setPosition(sf::Vector2f(_size.x*0.5f,radius*0.5f));
   _name.setOrigin(sf::Vector2f(_name.getLocalBounds().width*0.5,
                                _name.getLocalBounds().height*0.5));
   
@@ -121,6 +122,12 @@ void PopupWidget::useEvent(const sf::Event& event){
     if (limits.y > event.size.height)
       this->setPosition(this->getPosition().x,event.size.height-_size.y);
   }
+  else if (event.type == sf::Event::GainedFocus) {
+    _window.setOutlineThickness(2);
+  }
+  else if (event.type == sf::Event::LostFocus) {
+    _window.setOutlineThickness(0);
+  }
 }
 
 RobotWidget::RobotWidget(AbstractRobot* r, sf::String name, sf::Vector2f size, float radius) :
@@ -144,17 +151,22 @@ void RobotWidget::update(float dt)
 {
   PopupWidget::update(dt);
   sf::Vector2f w=Core::instance().getTerrain()->toPixelCoords(_robot->getPosition());
-  sf::Vector2f v=w + sf::Vector2f(55.0,-0.5*_size.y);
+  float x_off=Core::instance().getTerrain()->toPixelSize(sf::Vector2f(250.f,0.f)).x;
+  sf::Vector2f v=w + sf::Vector2f(x_off,-0.5*_size.y);
   sf::Vector2u u=Core::instance().getWindow()->getSize()-sf::Vector2u(_size.x,_size.y);
   if (v.x < 0 ) v.x = 0.0;
   if (v.y < 0 ) v.y = 0.0;
-  if (v.x > u.x) v.x = w.x-55.f-_size.x;
+  if (v.x > u.x) v.x = w.x-x_off-_size.x;
   if (v.y > u.y) v.y = u.y;
   
   if (_glue) {
     this->setPosition(v);
   }
   _gluePlace.setPosition(v);
+  
+  sf::Color focusColor=_robot->getColor();
+  focusColor.a = 140;
+  _window.setOutlineColor(focusColor);
 }
 
 void RobotWidget::useEvent(const sf::Event& event)

@@ -26,6 +26,14 @@ sf::Vector2f Terrain::toTerrainCoords(const sf::Vector2f& pc) const
   return sf::Vector2f(v.x*_view.getSize().x,v.y*_view.getSize().y);
 }
 
+sf::Vector2f Terrain::toPixelSize(const sf::Vector2f& ts) const
+{
+  sf::Vector2f v;
+  v.x = (ts.x)/(_view.getSize().x);
+  v.y = (ts.y)/(_view.getSize().y);
+  return sf::Vector2f(v.x*_window->getSize().x,v.y*_window->getSize().y);
+}
+
 TerrainRobotMovie::TerrainRobotMovie(sf::RenderWindow& window):
 Terrain(sf::Vector2f(3000,2000),window),
 _sprite(sf::Vector2f(3000,2000))

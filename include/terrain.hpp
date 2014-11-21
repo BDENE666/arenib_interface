@@ -21,6 +21,7 @@ class Terrain : public sf::Drawable
     
     sf::Vector2f toPixelCoords(const sf::Vector2f& tc) const;
     sf::Vector2f toTerrainCoords(const sf::Vector2f& pc) const; 
+    sf::Vector2f toPixelSize(const sf::Vector2f& ts) const;
     
   protected:
     sf::View _view;

@@ -23,7 +23,7 @@ class PopupWidget : public Widget
       return (v.x > p.x && 
               v.y > p.y && 
               v.x < p.x + _size.x &&
-              v.y < p.y + _size.x); 
+              v.y < p.y + _size.y); 
     }
     
     
