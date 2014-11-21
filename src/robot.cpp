@@ -9,7 +9,8 @@
 AbstractRobot::AbstractRobot(const sf::IpAddress& addr, unsigned short port) :
 _addr(addr),
 _thread(&AbstractRobot::thread_func, this),
-_port(port)
+_port(port),
+_running(false)
 {
   
 }
@@ -97,7 +98,9 @@ bool AbstractRobot::extract(sf::Packet& packet)
 {
 	sf::Int16 x,y;
 	sf::Int16 theta;
-  if (! (packet >> _flags)) return false; //uint8
+  sf::Lock lock(mutex);
+  sf::Uint8 temp_flags;
+  if (! (packet >> temp_flags)) return false; //uint8
 	if (! (packet >> _state)) return false; //uint8
 	if (! (packet >> x)) return false;      //int16
 	if (! (packet >> y)) return false;      //int16
@@ -106,8 +109,11 @@ bool AbstractRobot::extract(sf::Packet& packet)
 	if (! (packet >> _color.g)) return false;  //uint8
 	if (! (packet >> _color.b)) return false;  //uint8
 	
+  _flags=temp_flags;
 	this->setPosition(sf::Vector2f(x,y)); //en millimetres
 	this->setRotation(theta/10.f);        //en dixiemes de degrés
+  
+  if (!_running && _flags & 0x3FF) _thread.launch(); //(Re) launch the thread if flags say that robot want other infos
 	
 	if (!( this->extractExtraInfos(packet))) return false;//selon le robot
 	
@@ -115,27 +121,30 @@ bool AbstractRobot::extract(sf::Packet& packet)
 	return true;
 }
 
-bool AbstractRobot::pack(sf::Packet& packet)
+void AbstractRobot::pack(sf::Packet& packet, const std::string& name)
 {
-  packet << (sf::Uint16) _flags;              // uint16 
-  packet << std::string("Nom de mon robot"); // std::string <-- identifiant du robot gardez tjs le même
-  packet << (sf::Uint8) _state;                // uint8 
-  /*packet << (sf::Int16) position_x; //mm     // int16 
-  packet << (sf::Int16) position_y; //mm     // int16 
-  packet << (sf::Int16) theta; //degres*10   // int16 
-  packet << (sf::Uint8) color_r; //rouge     // uint8 
-  packet << (sf::Uint8) color_g; //vert      // uint8 
-  packet << (sf::Uint8) color_b; //bleu      // uint8 */
+  sf::Lock lock(mutex);
 
-  return false;
+  packet << (sf::Uint16) _flags;          
+  packet << name; 
+  packet << (sf::Uint8) _state;             
+  packet << (sf::Int16) getPosition().x; //mm  
+  packet << (sf::Int16) getPosition().y; //mm  
+  packet << (sf::Int16) getRotation()*10.f; //degres*10   
+  packet << (sf::Uint8) _color.r; //rouge     
+  packet << (sf::Uint8) _color.g; //vert      
+  packet << (sf::Uint8) _color.b; //bleu      
+
+  if (_flags & 0x8000) this->packExtraInfos(packet);  
 }
 
 void AbstractRobot::thread_func()
 {
+  _running=true;
   sf::UdpSocket socket;
   sf::Packet packet;
   
-  while (_flags & 0x3FFFF)
+  while (_flags & 0x3FF)
   {
     if (Core::instance().getRobots().size() > 1)
     {
@@ -143,31 +152,18 @@ void AbstractRobot::thread_func()
       packet << (sf::Uint8) 0x22;  //magic       // uint8
       packet << (sf::Uint8) Core::instance().getRobots().size()-1;
     
+      std::map<std::string, AbstractRobot*>::iterator it=Core::instance().getRobots().begin();
+      for (;it != Core::instance().getRobots().end(); it++)
+      {
+        if (it->second != this) {
+          it->second->pack(packet,it->first);
+        }        
+      }
       socket.send(packet, _addr, _port);
     }
+    sf::sleep(sf::milliseconds(_flags & 0x3FF));
   }
-  
-  /*
-  
-	sf::Int16 x,y;
-	sf::Int16 theta;
-
-  sf::Vector2f position=this->getPosition(); //en millimetres
-  float theta_f= (this->getRotation())*10;   //en dixiemes de degrés
-
-  x=(sf::Int16)(position.x);
-  y=(sf::Int16)(position.y);
-  theta=(sf::Int16)theta_f;
-
-	if (! (packet << _state)) return false; //uint8
-	if (! (packet << x)) return false;      //int16
-	if (! (packet << y)) return false;      //int16
-	if (! (packet << theta)) return false;  //int16
-	if (! (packet << _color.r)) return false;  //uint8
-	if (! (packet << _color.g)) return false;  //uint8
-	if (! (packet << _color.b)) return false;  //uint8
-	
-	*/
+  _running=false;
 }
 
 
