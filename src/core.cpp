@@ -83,6 +83,8 @@ int Core::main(int argc, char** argv)
             {
               if (!robot->second->extract(packet))
                 std::cerr << "receive bad packet failed to update " << name << std::endl;
+              else 
+                robot->second->updateRobotEndpoint(remote,port);
             }
             else 
             {

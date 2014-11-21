@@ -21,6 +21,10 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     virtual inline RobotWidget* createWidget(std::string name) { (void) name; return 0;}
     inline bool acceptTargetPoint() { return _flags & 0x4000; }
     virtual void sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta );
+    
+    inline void updateRobotEndpoint(const sf::IpAddress& i, unsigned short p) {
+      _addr=i; _port=p;
+    }
 
     sf::Mutex mutex;
     

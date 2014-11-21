@@ -23,7 +23,7 @@ sf::Vector2f Terrain::toTerrainCoords(const sf::Vector2f& pc) const
   sf::Vector2f v;
   v.x = (pc.x-_window->getSize().x*0.5f)/(_window->getSize().x);
   v.y = (pc.y-_window->getSize().y*0.5f)/(_window->getSize().y);
-  return sf::Vector2f(v.x*_view.getSize().x,-v.y*_view.getSize().y);
+  return sf::Vector2f(v.x*_view.getSize().x,v.y*_view.getSize().y);
 }
 
 TerrainRobotMovie::TerrainRobotMovie(sf::RenderWindow& window):

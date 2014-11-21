@@ -85,17 +85,18 @@ void PopupWidget::setText(const sf::String& s) {
 void PopupWidget::useEvent(const sf::Event& event){
   if (event.type == sf::Event::MouseButtonPressed)
   {
-    if (event.mouseButton.button == sf::Mouse::Left && 
-        onIt(sf::Vector2f(event.mouseButton.x,
-                          event.mouseButton.y)))
-    {
-      _pressed=true;
-      _previousMouse=sf::Vector2f(event.mouseButton.x,
-                                  event.mouseButton.y);
-    }
-    else {
-      this->outMousePressed(event.mouseButton.x,
-                            event.mouseButton.y);
+    if (event.mouseButton.button == sf::Mouse::Left) {
+      if (onIt(sf::Vector2f(event.mouseButton.x,
+                            event.mouseButton.y)))
+      {
+        _pressed=true;
+        _previousMouse=sf::Vector2f(event.mouseButton.x,
+                                    event.mouseButton.y);
+      }
+      else {
+        this->outMousePressed(event.mouseButton.x,
+                              event.mouseButton.y);
+      }
     }
       
   } else if (event.type == sf::Event::MouseButtonReleased) {

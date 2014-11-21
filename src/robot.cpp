@@ -3,7 +3,7 @@
 #include "robot.hpp"
 #include "robots/echec_critique.hpp"
 #include "core.hpp"
-
+#include <iostream>
 #include <sstream>
 
 AbstractRobot::AbstractRobot(const sf::IpAddress& addr, unsigned short port) :
@@ -176,12 +176,16 @@ RobotWidget* Robot::createWidget(std::string name)
 
 void AbstractRobot::sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta )
 {
-  if (!acceptTargetPoint()) return;
+  if (!acceptTargetPoint()) {
+     std::cerr << "Error cannot send target position IP " <<  _addr.toString() << " port " << _port << " not accepting target message" << std::endl; 
+    return;
+  }
   sf::Lock lock(mutex);
   sf::Packet packet;
   packet << (sf::Uint8) 0x21;  //magic
   packet << (sf::Int16) x;
   packet << (sf::Int16) y;
   packet << (sf::Int16) theta;
-  _socket.send(packet, _addr, 2222);
+  std::cout << "Send target position x: " << x << " y:" << y << " to IP " <<  _addr.toString() << " port " << _port << std::endl; 
+  _socket.send(packet, _addr, _port);
 }
