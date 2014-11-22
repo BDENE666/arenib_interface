@@ -6,14 +6,24 @@
 #include <SFML/Graphics.hpp>
 #include "popup_widget.hpp"
 
+#ifdef SFML_SYSTEM_WINDOWS
+#include <windows.h>
+#endif
+
 class AbstractRobot : public sf::Drawable, public sf::Transformable
 {
   public:
+    #ifdef SFML_SYSTEM_WINDOWS
+    AbstractRobot(HANDLE serialPort);
+    #endif
     AbstractRobot(const sf::IpAddress& addr, unsigned short port);
     virtual ~AbstractRobot();
     
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
     static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
+    #ifdef SFML_SYSTEM_WINDOWS
+    static AbstractRobot* createFromName(std::string name,HANDLE serialPort);
+    #endif
     bool extract(sf::Packet& packet);
     void pack(sf::Packet& packet);
 
@@ -35,8 +45,15 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     inline sf::Uint16 getSendPeriod() const { return _flags & 0x3FF; } 
     inline const sf::Color& getColor() const { return _color; } 
     
+  
+  private:
+    #ifdef SFML_SYSTEM_WINDOWS
+    void thread_serialport();
+    HANDLE _serialPort;
+    #endif
+  
   protected:
-
+  
     virtual void setupGraphics()=0;
     inline virtual bool extractExtraInfos(sf::Packet& packet) {
       (void) packet;
@@ -63,6 +80,9 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 class Robot : public AbstractRobot
 {
   public:
+    #ifdef SFML_SYSTEM_WINDOWS
+    Robot(HANDLE serialPort);
+    #endif
     Robot(const sf::IpAddress& addr, unsigned short port);
     virtual ~Robot();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;

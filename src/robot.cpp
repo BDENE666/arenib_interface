@@ -206,3 +206,49 @@ void AbstractRobot::sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta )
   std::cout << "Send target position x: " << x << " y:" << y << " to IP " <<  _addr.toString() << " port " << _port << std::endl; 
   _socket.send(packet, _addr, _port);
 }
+
+#ifdef SFML_SYSTEM_WINDOWS
+AbstractRobot::AbstractRobot(HANDLE serialPort):
+_serialPort(serialPort),
+_thread(&AbstractRobot::thread_serialport, this),
+_running(false)
+{
+  _thread.launch();
+}
+
+Robot::Robot(HANDLE serialPort):
+AbstractRobot(serialPort),
+_corp(sf::Vector2f(300,200)),
+_roueGauche(sf::Vector2f(60,110)),
+_roueDroite(sf::Vector2f(60,110)),
+_bumper(30),
+_widget(0)
+{
+  _color= sf::Color(217,49,53,255);
+  setupGraphics();
+}
+
+
+AbstractRobot* createFromName(std::string name,HANDLE serialPort)
+{
+  if (name=="EchecCritique" || name=="EchecCritique2")
+    return new EchecCritique(serialPort);
+	return new Robot(serialPort);
+}
+
+void AbstractRobot::thread_serialport()
+{
+  _running=true;
+  sf::Packet packet;
+  
+  while (_flags & 0x3FF )
+  {
+    sf::sleep(sf::milliseconds(_flags & 0x3FF));
+  }
+  _running=false;
+}
+
+
+#endif
+
+

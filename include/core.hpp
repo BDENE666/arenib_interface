@@ -6,6 +6,7 @@
 #include "terrain.hpp"
 #include "robot.hpp"  
 
+
 class Core : public Singleton<Core>
 {
   friend class Singleton<Core>; 
