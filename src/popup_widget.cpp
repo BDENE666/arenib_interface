@@ -103,6 +103,10 @@ void PopupWidget::useEvent(const sf::Event& event){
   } else if (event.type == sf::Event::MouseButtonReleased) {
     if (event.mouseButton.button == sf::Mouse::Left)
     {
+      if (!_pressed) {
+        this->outMouseReleased(event.mouseButton.x,
+                               event.mouseButton.y);
+      }
       _pressed=false;
       _previousMouse=sf::Vector2f(event.mouseButton.x,
                                   event.mouseButton.y);
@@ -127,6 +131,7 @@ void PopupWidget::useEvent(const sf::Event& event){
   }
   else if (event.type == sf::Event::LostFocus) {
     _window.setOutlineThickness(0);
+    _pressed=false;
   }
 }
 
@@ -188,6 +193,13 @@ void RobotWidget::useEvent(const sf::Event& event)
   }
 }
 void RobotWidget::outMousePressed(int x, int y)
+{
+  if (_robot->acceptTargetPoint()) {
+    
+  }
+}
+
+void RobotWidget::outMouseReleased(int x, int y)
 {
   if (_robot->acceptTargetPoint()) {
     sf::Vector2f ppos(x,y);

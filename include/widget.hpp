@@ -61,7 +61,7 @@ class WidgetManager : public Singleton<WidgetManager>
     
     std::set<Widget*> _widgets;
     Widget* _focus;
-    
+    Widget* _clickOn;
     sf::Clock _clock;
 };
 

@@ -16,7 +16,8 @@ Widget::~Widget()
 
 WidgetManager::WidgetManager() :
 _view(),
-_focus(0)
+_focus(0),
+_clickOn(0)
 {
 }
 
@@ -58,9 +59,22 @@ void WidgetManager::useEvent(const sf::Event& event)
       for (iterator i=_widgets.begin();i != _widgets.end();i++)
       {
         if (_focus != (*i) && 
-            (*i)->onIt(sf::Vector2f(event.mouseButton.x,
+           (*i)->onIt(sf::Vector2f(event.mouseButton.x,
                                     event.mouseButton.y))) {
-          setFocus(*i);
+          _clickOn=(*i);
+          return;
+        }
+      }
+    }
+  } else if (event.type == sf::Event::MouseButtonReleased && _clickOn)
+  {
+    if (event.mouseButton.button == sf::Mouse::Left)
+    {
+      for (iterator i=_widgets.begin();i != _widgets.end();i++)
+      {
+        if (_clickOn->onIt(sf::Vector2f(event.mouseButton.x,
+                                        event.mouseButton.y))) {
+          setFocus(_clickOn);
           return;
         }
       }
