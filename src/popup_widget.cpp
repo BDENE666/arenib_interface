@@ -114,11 +114,13 @@ void PopupWidget::useEvent(const sf::Event& event){
   } else if (event.type == sf::Event::MouseMoved)
   {
     if (_pressed) {
-      
       this->move(sf::Vector2f(event.mouseMove.x,event.mouseMove.y)-_previousMouse);
+    } else {
+      this->outMouseMoved(event.mouseMove.x, event.mouseMove.y);
     }
     _previousMouse=sf::Vector2f(event.mouseMove.x,
                                 event.mouseMove.y);
+    
   }else if (event.type == sf::Event::Resized) {
     sf::Vector2f limits = this->getPosition() - this->getOrigin() + 0.5f*_size;
     if (limits.x > event.size.width)
@@ -141,14 +143,18 @@ _robot(r),
 _glue(true)
 {
   initBubbleShape(_gluePlace,size,radius);  
-  _gluePlace.setFillColor(sf::Color(0,0,0,0));
+  _gluePlace.setFillColor(sf::Color(0,0,0,0)); //transparent
   _gluePlace.setOutlineThickness(2.0);
   _gluePlace.setOutlineColor(sf::Color(255,255,255,140));
+  
+  _targetPoint.setOutlineThickness(2.0);
+  //_targetPoint.setScale(1.f,-1.f);
 }
 
 void RobotWidget::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
   if (_pressed) target.draw(_gluePlace);
+  target.draw(_targetPoint,states);
   initDraw(target,states);
 }
 
@@ -172,6 +178,8 @@ void RobotWidget::update(float dt)
   sf::Color focusColor=_robot->getColor();
   focusColor.a = 140;
   _window.setOutlineColor(focusColor);
+  _targetPoint.setOutlineColor(focusColor);
+  _targetPoint.setFillColor(_robot->getColor());
 }
 
 void RobotWidget::useEvent(const sf::Event& event)
@@ -195,16 +203,35 @@ void RobotWidget::useEvent(const sf::Event& event)
 void RobotWidget::outMousePressed(int x, int y)
 {
   if (_robot->acceptTargetPoint()) {
-    
+    _targetPoint.setPointCount(4);
+    _targetPoint.setPosition(sf::Vector2f(x,y));
+    _targetPoint.setRotation(0.f);
+    _targetPoint.setPoint(0, sf::Vector2f(0.f, -20.f));
+    _targetPoint.setPoint(1, sf::Vector2f(10.f, 5.f));
+    _targetPoint.setPoint(2, sf::Vector2f(0.f, 0.f));
+    _targetPoint.setPoint(3, sf::Vector2f(-10.f, 5.f));
   }
 }
 
 void RobotWidget::outMouseReleased(int x, int y)
 {
   if (_robot->acceptTargetPoint()) {
-    sf::Vector2f ppos(x,y);
-    sf::Vector2f rpos=Core::instance().getTerrain()->toTerrainCoords(ppos);
-    _robot->sendTargetPoint(rpos.x,rpos.y,_robot->getRotation()*10);
+    sf::Vector2f rpos=Core::instance().getTerrain()->toTerrainCoords(_targetPoint.getPosition());
+    _robot->sendTargetPoint(rpos.x,rpos.y,_targetAngle*10);
     _targetPointClock.restart();
+    _targetPoint.setPointCount(0);
+  }
+}
+
+void RobotWidget::outMouseMoved(int x, int y)
+{
+  if (_robot->acceptTargetPoint() && _targetPoint.getPointCount()) {
+    _targetAngle=atan2(y-_targetPoint.getPosition().y,
+                       -(x-_targetPoint.getPosition().x));
+    _targetAngle = _targetAngle * 180.f / 3.14159265359f;
+    _targetAngle += 90.f;
+    if (_targetAngle < 0.f) _targetAngle = _targetAngle + 360.f;
+    //std::cout << "angle : " << _targetAngle << std::endl;
+    _targetPoint.setRotation(-_targetAngle);
   }
 }

@@ -32,6 +32,7 @@ class PopupWidget : public Widget
   protected:
     inline virtual void outMousePressed( int x, int y) { (void) x; (void) y; } //outside the Popup
     inline virtual void outMouseReleased( int x, int y) { (void) x; (void) y; } //outside the Popup
+    inline virtual void outMouseMoved( int x, int y) { (void) x; (void) y; } //outside the Popup
     
     void initDraw(sf::RenderTarget &target, sf::RenderStates states) const;
     sf::ConvexShape _window;
@@ -56,6 +57,7 @@ class RobotWidget : public PopupWidget
   
     virtual void outMousePressed( int x, int y);
     virtual void outMouseReleased( int x, int y);
+    virtual void outMouseMoved( int x, int y);
     
     sf::ConvexShape _gluePlace;
     AbstractRobot* _robot;
@@ -63,6 +65,7 @@ class RobotWidget : public PopupWidget
     
     sf::Clock _targetPointClock;
     sf::ConvexShape _targetPoint;
+    float _targetAngle;
 };
 
 #endif
