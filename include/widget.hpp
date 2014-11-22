@@ -40,6 +40,7 @@ class WidgetManager : public Singleton<WidgetManager>
     void update();
     void drawAll(sf::RenderTarget &target) const;
     void useEvent(const sf::Event& event);
+    void setFocus(Widget* w);
     
     inline void initView(const sf::View& view) {
       _view=view;

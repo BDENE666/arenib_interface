@@ -60,14 +60,7 @@ void WidgetManager::useEvent(const sf::Event& event)
         if (_focus != (*i) && 
             (*i)->onIt(sf::Vector2f(event.mouseButton.x,
                                     event.mouseButton.y))) {
-          sf::Event e;
-          if (_focus) {
-            e.type=sf::Event::LostFocus;
-            _focus->useEvent(e);
-          }
-          _focus=(*i);
-          e.type=sf::Event::GainedFocus;
-          _focus->useEvent(e);
+          setFocus(*i);
           return;
         }
       }
@@ -82,4 +75,16 @@ void WidgetManager::useEvent(const sf::Event& event)
   if (_focus) {
     _focus->useEvent(event);
   }
+}
+void WidgetManager::setFocus(Widget* w)
+{
+  if (!w) return;
+  sf::Event e;
+  if (_focus) {
+    e.type=sf::Event::LostFocus;
+    _focus->useEvent(e);
+  }
+  _focus=w;
+  e.type=sf::Event::GainedFocus;
+  _focus->useEvent(e);
 }

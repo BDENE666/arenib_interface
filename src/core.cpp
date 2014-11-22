@@ -92,6 +92,8 @@ int Core::main(int argc, char** argv)
               Widget* w = _robots[name]->createWidget(name);
               if (!_robots[name]->extract(packet))
                 std::cerr << "receive bad packet failed to update " << name << std::endl;
+              if (_robots.size() == 1)
+                WidgetManager::instance().setFocus(w);
               /*else {
                 sf::Vector2f v = _terrain->toPixelCoords(_robots[name]->getPosition());
                 if (v.x >=0.9*_window->getSize().x) v.x = 0.9*_window->getSize().x;
