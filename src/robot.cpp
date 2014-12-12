@@ -208,15 +208,14 @@ void AbstractRobot::sendTargetPoint(sf::Int16 x, sf::Int16 y, sf::Int16 theta )
 }
 
 #ifdef SFML_SYSTEM_WINDOWS
-AbstractRobot::AbstractRobot(HANDLE serialPort):
-_serialPort(serialPort),
-_thread(&AbstractRobot::thread_serialport, this),
+AbstractRobot::AbstractRobot(RS232& serialPort):
+_serialPort(&serialPort),
+_thread(&AbstractRobot::thread_func, this),
 _running(false)
 {
-  _thread.launch();
 }
 
-Robot::Robot(HANDLE serialPort):
+Robot::Robot(RS232& serialPort):
 AbstractRobot(serialPort),
 _corp(sf::Vector2f(300,200)),
 _roueGauche(sf::Vector2f(60,110)),
@@ -229,24 +228,11 @@ _widget(0)
 }
 
 
-AbstractRobot* createFromName(std::string name,HANDLE serialPort)
+AbstractRobot* createFromName(std::string name,RS232& serialPort)
 {
-  if (name=="EchecCritique" || name=="EchecCritique2")
-    return new EchecCritique(serialPort);
 	return new Robot(serialPort);
 }
 
-void AbstractRobot::thread_serialport()
-{
-  _running=true;
-  sf::Packet packet;
-  
-  while (_flags & 0x3FF )
-  {
-    sf::sleep(sf::milliseconds(_flags & 0x3FF));
-  }
-  _running=false;
-}
 
 
 #endif

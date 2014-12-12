@@ -1,14 +1,16 @@
 
-#ifndef ROBOT_ECHEC_CRITIQUE
-#define ROBOT_ECHEC_CRITIQUE
+#ifndef ROBOT_PROJET_ROBOT
+#define ROBOT_PROJET_ROBOT
 
 #include "robot.hpp"
 
-class EchecCritique : public AbstractRobot
+class RobotProjet : public AbstractRobot
 {
   public:
-    EchecCritique(const sf::IpAddress& addr, unsigned short port);
-    virtual ~EchecCritique();
+    #ifdef SFML_SYSTEM_WINDOWS
+    RobotProjet(RS232& serialPort);
+    #endif
+    virtual ~RobotProjet();
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
     virtual RobotWidget* createWidget(std::string name);
 
@@ -19,10 +21,9 @@ class EchecCritique : public AbstractRobot
 
   private:
     sf::ConvexShape _corp;
-    sf::RectangleShape _blocMoteur;
     sf::RectangleShape _roueGauche;
     sf::RectangleShape _roueDroite;
-    sf::CircleShape _bumper;
+    sf::Texture _texture;
     RobotWidget* _widget;
 };
 

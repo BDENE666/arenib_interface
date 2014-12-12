@@ -5,6 +5,7 @@
 #include <SFML/Network.hpp>
 #include <SFML/Graphics.hpp>
 #include "popup_widget.hpp"
+#include "rs232.hpp"
 
 #ifdef SFML_SYSTEM_WINDOWS
 #include <windows.h>
@@ -14,7 +15,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
 {
   public:
     #ifdef SFML_SYSTEM_WINDOWS
-    AbstractRobot(HANDLE serialPort);
+    AbstractRobot(RS232& serialPort);
     #endif
     AbstractRobot(const sf::IpAddress& addr, unsigned short port);
     virtual ~AbstractRobot();
@@ -22,7 +23,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
     static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
     #ifdef SFML_SYSTEM_WINDOWS
-    static AbstractRobot* createFromName(std::string name,HANDLE serialPort);
+    static AbstractRobot* createFromName(std::string name,RS232& serialPort);
     #endif
     bool extract(sf::Packet& packet);
     void pack(sf::Packet& packet);
@@ -48,8 +49,7 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
   
   private:
     #ifdef SFML_SYSTEM_WINDOWS
-    void thread_serialport();
-    HANDLE _serialPort;
+    RS232* _serialPort;
     #endif
   
   protected:
@@ -81,7 +81,7 @@ class Robot : public AbstractRobot
 {
   public:
     #ifdef SFML_SYSTEM_WINDOWS
-    Robot(HANDLE serialPort);
+    Robot(RS232&);
     #endif
     Robot(const sf::IpAddress& addr, unsigned short port);
     virtual ~Robot();

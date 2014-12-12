@@ -4,7 +4,10 @@
 #include <iostream>
 #include "font_ibm.hpp"
 #include "icon_texture.hpp"
+#include "robots/projet_robot.hpp"
 
+
+static RS232 serialPort;
 
 extern sf::Font globalFont;
 
@@ -23,6 +26,12 @@ void Core::initialize(sf::Vector2f size)
   _terrain=new E021(*_window,4,3);
   WidgetManager::instance().initView(sf::View(sf::Vector2f(size.x*0.5,size.y*0.5), 
                                               sf::Vector2f(size.x,size.y)));
+                                              
+                                            
+  _robots["test"]= new RobotProjet(serialPort);
+  Widget* w = _robots["test"]->createWidget("ProjetRobot");
+  WidgetManager::instance().setFocus(w);
+  
 }
 
 int Core::main(int argc, char** argv)

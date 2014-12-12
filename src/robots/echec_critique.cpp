@@ -27,32 +27,6 @@ _widget(0)
   setupGraphics();
 }
 
-#ifdef SFML_SYSTEM_WINDOWS
-EchecCritique::EchecCritique(HANDLE serialPort):
-AbstractRobot(serialPort),
-_corp(8),
-_blocMoteur(sf::Vector2f(140,130)),
-_roueGauche(sf::Vector2f(28,65)),
-_roueDroite(sf::Vector2f(28,65)),
-_bumper(12.5),
-_widget(0)
-{
-  _corp.setPoint(0, sf::Vector2f(37, 0));
-  _corp.setPoint(1, sf::Vector2f(400-37, 0));
-  _corp.setPoint(2, sf::Vector2f(400, 37));
-  _corp.setPoint(3, sf::Vector2f(400, 175));
-  _corp.setPoint(4, sf::Vector2f(400-115, 290));
-  _corp.setPoint(5, sf::Vector2f(115, 290));
-  _corp.setPoint(6, sf::Vector2f(0, 175));
-  _corp.setPoint(7, sf::Vector2f(0, 37));
-  _color= sf::Color(157,172,230,255);
-  _blocMoteur.setOutlineThickness(10.f);
-  _blocMoteur.setFillColor(sf::Color(70,70,70,255));
-  _blocMoteur.setOutlineColor(sf::Color(90,90,90,255));
-  setupGraphics();
-}
-#endif
-
 EchecCritique::~EchecCritique(){
 }
 
