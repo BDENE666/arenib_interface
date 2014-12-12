@@ -39,5 +39,16 @@ class TerrainRobotMovie : public Terrain
     sf::RectangleShape _sprite;
 };
 
+class E021 : public Terrain
+{
+  public:
+    E021(sf::RenderWindow& window,unsigned x=3, unsigned y=3);
+    virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const;
+    
+  protected:
+    sf::Texture _texture;
+    sf::RectangleShape _sprite;
+};
+
 
 #endif

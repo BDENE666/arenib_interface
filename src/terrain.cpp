@@ -47,3 +47,19 @@ void TerrainRobotMovie::draw(sf::RenderTarget &target, sf::RenderStates states) 
 {
   target.draw(_sprite,states);
 }
+
+E021::E021(sf::RenderWindow& window,unsigned x, unsigned y):
+Terrain(sf::Vector2f(x*300,y*300),window),
+_sprite(sf::Vector2f(x*300,y*300))
+{
+  _texture.loadFromFile("carrelage.gif");
+  _texture.setRepeated(true);
+  _sprite.setTexture(&_texture);
+  _sprite.setTextureRect(sf::IntRect(0,0,x*_texture.getSize().x,y*_texture.getSize().y));
+  _sprite.setOrigin(x*150,y*150);
+}
+
+void E021::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+  target.draw(_sprite,states);
+}
