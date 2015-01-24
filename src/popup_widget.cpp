@@ -7,8 +7,6 @@
 #include <cmath>
 #include <iostream>
 
-extern sf::Font globalFont;
-
 void PopupWidget::initBubbleShape(sf::ConvexShape& shape, const sf::Vector2f& size,float radius)
 {
   unsigned k=0;
@@ -45,8 +43,8 @@ void PopupWidget::initBubbleShape(sf::ConvexShape& shape, const sf::Vector2f& si
 }
 
 PopupWidget::PopupWidget(sf::String name, sf::Vector2f size, float radius) :
-_name(name,globalFont,radius),
-_text("",globalFont,radius-2),
+_name(name,Core::instance().globalFont,radius),
+_text("",Core::instance().globalFont,radius-2),
 _size(size),
 _pressed(false)
 {

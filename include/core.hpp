@@ -29,6 +29,8 @@ class Core : public Singleton<Core>
     
     int main(int argc, char** argv);
     
+    sf::Font globalFont;
+    
   private:
     Core();
     

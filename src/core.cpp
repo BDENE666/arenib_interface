@@ -6,11 +6,6 @@
 #include "icon_texture.hpp"
 #include "robots/projet_robot.hpp"
 
-
-static RS232* serialPort;
-
-extern sf::Font globalFont;
-
 Core::Core() : 
 _window(0),
  _terrain(0)
@@ -19,7 +14,6 @@ _window(0),
 
 void Core::initialize(sf::Vector2f size)
 {
-  serialPort = new RS232("COM3:");
   globalFont.loadFromMemory(font_ibm,font_ibm_len);
   _window=new sf::RenderWindow(sf::VideoMode(size.x,size.y), "Arenib Interface");
   _window->setFramerateLimit(60);
@@ -27,13 +21,6 @@ void Core::initialize(sf::Vector2f size)
   _terrain=new E021(*_window,10,7);
   WidgetManager::instance().initView(sf::View(sf::Vector2f(size.x*0.5,size.y*0.5), 
                                               sf::Vector2f(size.x,size.y)));
-                                              
-                                            
-  _robots["test"]= new RobotProjet(*serialPort);
-  Widget* w = _robots["test"]->createWidget("ProjetRobot");
-  WidgetManager::instance().setFocus(w);
-  serialPort->setRobot(_robots["test"]);
-  
 }
 
 int Core::main(int argc, char** argv)
@@ -65,15 +52,12 @@ int Core::main(int argc, char** argv)
       {
         if (event.key.code>=sf::Keyboard::A && event.key.code<=sf::Keyboard::Z)
         {
-          char buf = event.key.code - sf::Keyboard::A + 'a';
-          //std::cout << "Send " << buf << " into serial port" << std::endl;
-          serialPort->send(&buf,1);
         }
       }
       else 
         WidgetManager::instance().useEvent(event);
     }
-    serialPort->update();
+    //serialPort->update();
 
     
     ///Widgets 

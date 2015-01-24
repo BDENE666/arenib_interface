@@ -22,9 +22,6 @@ class AbstractRobot : public sf::Drawable, public sf::Transformable
     
     virtual void draw (sf::RenderTarget &target, sf::RenderStates states) const = 0;
     static AbstractRobot* createFromName(std::string name,const sf::IpAddress& addr, unsigned short port);
-    #ifdef SFML_SYSTEM_WINDOWS
-    static AbstractRobot* createFromName(std::string name,RS232& serialPort);
-    #endif
     bool extract(sf::Packet& packet);
     void pack(sf::Packet& packet);
 

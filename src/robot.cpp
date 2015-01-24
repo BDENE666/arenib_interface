@@ -228,11 +228,6 @@ _widget(0)
 }
 
 
-AbstractRobot* createFromName(std::string name,RS232& serialPort)
-{
-	return new Robot(serialPort);
-}
-
 
 
 #endif
