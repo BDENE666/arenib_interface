@@ -9,7 +9,6 @@
 RS232::RS232(std::string port,BYTE parity,int Vitesse,int Data, BYTE stop,int TimeOut) :
 _port_str(port),
 _robot(0),
-_thread(&RS232::thread_func,this),
 _ragequit(false)
 {
   inStruct=0;
@@ -159,8 +158,7 @@ int RS232::recv(char* buffer, unsigned int size)
 
 RS232::~RS232()
 {
-  _ragequit=true; 
-  _thread.wait(); 
+  _ragequit=true;  
   CloseHandle(_handle);
 }
 
@@ -239,9 +237,4 @@ void RS232::update()
       else console += buf;
     }
   }
-}
-
-void RS232::thread_func()
-{
-  
 }

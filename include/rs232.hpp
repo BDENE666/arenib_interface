@@ -10,7 +10,6 @@ class AbstractRobot;
 class RS232 
 {
 private:
-  void thread_func();
   
   //Variables de la communication
   DCB _config;
@@ -20,7 +19,6 @@ private:
   AbstractRobot* _robot;
   //var des threads
   sf::Mutex _mutex;
-  sf::Thread _thread;
   bool _ragequit;
   
   int inStruct;

@@ -30,14 +30,19 @@ class Core : public Singleton<Core>
     int main(int argc, char** argv);
     
     sf::Font globalFont;
-    
+   
+    void loadUARTRobotList(const std::string& f=std::string("uart_robot_list.txt"));
+   
   private:
     Core();
+   
     
     sf::RenderWindow* _window;
     Terrain* _terrain;
     std::map<std::string, AbstractRobot*> _robots;
-    
+    #ifdef SFML_WINDOWS
+    std::map<std::string, RS232*> _rs232;
+    #endif
 
 };
 

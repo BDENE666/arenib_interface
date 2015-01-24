@@ -5,6 +5,8 @@
 #include "font_ibm.hpp"
 #include "icon_texture.hpp"
 #include "robots/projet_robot.hpp"
+#include <fstream>
+
 
 Core::Core() : 
 _window(0),
@@ -15,10 +17,11 @@ _window(0),
 void Core::initialize(sf::Vector2f size)
 {
   globalFont.loadFromMemory(font_ibm,font_ibm_len);
+  loadUARTRobotList();
   _window=new sf::RenderWindow(sf::VideoMode(size.x,size.y), "Arenib Interface");
   _window->setFramerateLimit(60);
   _window->setIcon(128, 128, icon_texture_png);
-  _terrain=new E021(*_window,10,7);
+  _terrain=new TerrainRobotMovie(*_window);
   WidgetManager::instance().initView(sf::View(sf::Vector2f(size.x*0.5,size.y*0.5), 
                                               sf::Vector2f(size.x,size.y)));
 }
@@ -137,4 +140,59 @@ int Core::main(int argc, char** argv)
     _window->display();
   }
   return 0;
+}
+
+
+void Core::loadUARTRobotList(const std::string& filename)
+{
+  char line[256];
+  char port[256];
+  char name[256];
+  
+  std::ifstream ifs(filename.c_str(), std::ifstream::in);
+  if (!ifs) {
+    std::cerr << "error unable to open " << filename << std::endl;
+    return;
+  }
+  
+  while (ifs.good() && ifs.getline(line, 256, '\n'))
+  {
+    unsigned int baudrate=9600;
+    if (line[0]=='#')
+    {
+      continue;
+    }
+    if (sscanf("%s %s %u",line,name,port,&baudrate) >=2)
+    {
+      const std::string port_str=std::string(port);
+      const std::string name_str=std::string(name);
+      #ifdef SFML_WINDOWS
+      
+      RS232* rs232;
+      if (_rs232.find(port_str) != _rs232.end())
+      {
+        rs232=_rs232[port_str];
+      } else {
+        rs232= new RS232(port_str,NOPARITY,baudrate);
+        _rs232[port_str]=rs232;
+      }
+      AbstractRobot robot=_robots.find(name_str);
+      if (robot != _robots.end())
+      {
+        //set serial Port
+      }
+      else 
+      {
+        std::cerr << "registring " << name_str << " with port " << port_str << " and baudrate " << baudrate std::endl;
+        _robots[name_str] = AbstractRobot::createFromName(name_str,*rs232);
+        Widget* w = _robots[name_str]->createWidget(name_str);
+        if (_robots.size() == 1)
+          WidgetManager::instance().setFocus(w);
+      }
+      #endif
+    }
+    else {
+      std::cerr << "Error file: " << filename << " line: \"" << line << "\" too few arguments" << std::endl;
+    }
+  }
 }

@@ -1,0 +1,5 @@
+#use this file to connect a uart port to a robot
+#1 robot per line using syntax: name port baudrate
+#exemple:
+#MyRobot COM1: 9600
+#lines that begin with '#' are comments 
