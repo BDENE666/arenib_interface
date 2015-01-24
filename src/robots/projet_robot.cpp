@@ -60,25 +60,21 @@ void RobotProjet::setupGraphics()
   if (_widget) {
     std::stringstream s;
     s << "-----------------" << std::endl;
-    s << "Etat: " << translateState(_state) << std::endl;
+    s << "Etat: " << RobotProjet::translateState(_state) << std::endl;
     s << "-----------------" << std::endl;
     s << "Coordonnees: " << std::endl;
     s << "X " << getPosition().x << "mm" << std::endl;
     s << "Y " << getPosition().y << "mm" << std::endl;
     s << "Theta " << getRotation() << " (deg)"<< std::endl;
     s << "-----------------" << std::endl;
-    s << "Communication: " << std::endl;
-    
-    if (threadRunning()) {
-      s << "Thread Active" << std::endl;
-      s << "Period " << getSendPeriod() << "ms" << std::endl;
-    } else 
-      s << "Thread Disable" << std::endl;
-    if (acceptTargetPoint())
-      s << "TP Available " << std::endl;
-    else 
-      s << "TP Unavailable " << std::endl;
+    s << "Commandes: " << std::endl;
+    s << "Z: Avance" << std::endl;
+    s << "S: Recule" << std::endl;
+    s << "Q: Gauche" << std::endl;
+    s << "D: Droite" << std::endl;
+    s << "A: Stop" << std::endl;
     s << "-----------------" << std::endl;
+    
     _widget->setTitleColor(_color);
     _widget->setText(sf::String(s.str()));
   }
@@ -89,15 +85,11 @@ std::string RobotProjet::translateState(sf::Uint8 e)
 {
   switch (e)
   {
-    case 1:  return "Stop force";
-    case 2:  return "Avance";
-    case 3:  return "Tourne";
-    case 4:  return "Stop";
-    case 5:  return "Position W";
-    case 6:  return "Avance Free";
-    case 7:  return "Position R";
-    case 8:  return "Bloque";
-    case 10:  return "Status Rob";
+    case 0:  return "Stop";
+    case 1:  return "Avance";
+    case 2:  return "Recule";
+    case 3:  return "Droite";
+    case 4:  return "Gauche";
     default: return "non defini";
   }
 }

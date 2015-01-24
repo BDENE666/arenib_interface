@@ -120,5 +120,19 @@ Voici comment le recevoir
 
 
 
+Utiliser la liason Série (UART/Xbee/Zigbee)
+-------------------------------------------
 
-	
+On peut utiliser la liaison série de la même manière que les paquets réseaux
+Attention
+
+	packet << (sf::Uint8) 022;  //magic       // uint8
+	packet << (sf::Uint8) 0x1;                 // uint8 <-- "nombre de robot"
+	packet << (sf::Uint16) flags;              // uint16 
+	packet << (sf::Uint8) etat;                // uint8 
+	packet << (sf::Int16) position_x; //mm     // int16 
+	packet << (sf::Int16) position_y; //mm     // int16 
+	packet << (sf::Int16) theta; //degres*10   // int16 
+	packet << (sf::Uint8) color_r; //rouge     // uint8 
+	packet << (sf::Uint8) color_g; //vert      // uint8 
+	packet << (sf::Uint8) color_b; //bleu      // uint8 
